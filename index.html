@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>职业罗盘 · 大学生职业生涯自我认知测评</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+/* ========== 基础重置与变量 ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#2D3561;
+  --ink-light:#4A5490;
+  --ink-muted:#8B93B8;
+  --amber:#E8A33D;
+  --amber-light:#F5C77A;
+  --cream:#F7F4EE;
+  --cream-card:#FFFCF6;
+  --line:#E5DFD3;
+  --white:#FFFFFF;
+  --serif:'Noto Serif SC',Georgia,'Songti SC',serif;
+  --sans:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+}
+html{font-size:16px;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--sans);
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.hidden{display:none!important}
+
+/* ========== 容器 ========== */
+#app{
+  max-width:430px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* ========== 选项内部波纹闪光 ========== */
+.opt-ripple{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:optRipple .3s cubic-bezier(.22,.61,.36,1) forwards;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes optRipple{
+  to{transform:scale(1)}
+}
+.quiz-option .opt-dot,
+.quiz-option .opt-text,
+.quiz-option .opt-degree-bar{position:relative;z-index:1}
+/* 闪光瞬间：卡片底色保持不变，由波纹从点击处灌入程度色 */
+.quiz-option.selected.flashing{
+  border-color:var(--sel);
+  background:var(--cream-card);
+}
+.quiz-option.flashing .opt-label{color:var(--sel-text);transition:color .12s ease .08s}
+.quiz-option.flashing .opt-desc{color:var(--sel-sub);transition:color .12s ease .08s}
+.quiz-option.flashing .opt-dot{
+  border-color:var(--sel);
+  background:var(--sel);
+  transition:all .12s ease .08s;
+}
+.quiz-option.flashing .opt-dot::after{
+  opacity:1;transform:scale(1);
+  background:var(--cream-card);
+  transition:all .12s ease .08s;
+}
+.quiz-option.flashing .opt-degree-bar{opacity:.9;background:var(--sel-text)!important}
+
+/* ========== 通用动效 ========== */
+.view{
+  animation:fadeUp .45s cubic-bezier(.22,.61,.36,1);
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}to{opacity:1}
+}
+@keyframes pulseRing{
+  0%{transform:scale(1);opacity:.6}
+  100%{transform:scale(1.8);opacity:0}
+}
+
+/* ========== 首页 ========== */
+#view-home{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:48px 28px 32px;
+  position:relative;
+  overflow:hidden;
+}
+.home-bg-deco{
+  position:absolute;
+  top:-80px;right:-80px;
+  width:280px;height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(232,163,61,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.home-bg-deco2{
+  position:absolute;
+  bottom:-60px;left:-60px;
+  width:220px;height:220px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(45,53,97,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.home-compass{
+  width:72px;height:72px;
+  margin:0 auto 28px;
+  position:relative;
+}
+.home-compass svg{width:100%;height:100%}
+.home-compass::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  border:1.5px solid var(--amber);
+  animation:pulseRing 2.4s ease-out infinite;
+}
+.home-eyebrow{
+  text-align:center;
+  font-size:11px;
+  letter-spacing:.35em;
+  color:var(--amber);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  font-weight:500;
+}
+.home-title{
+  font-family:var(--serif);
+  font-size:30px;
+  font-weight:700;
+  text-align:center;
+  line-height:1.35;
+  color:var(--ink);
+  margin-bottom:8px;
+}
+.home-subtitle{
+  text-align:center;
+  font-size:14px;
+  color:var(--ink-muted);
+  margin-bottom:36px;
+  line-height:1.7;
+}
+.home-card{
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:22px 20px;
+  margin-bottom:24px;
+}
+.home-card-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 0;
+}
+.home-card-row+.home-card-row{border-top:1px dashed var(--line)}
+.home-card-icon{
+  width:36px;height:36px;
+  border-radius:10px;
+  background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.home-card-icon svg{width:18px;height:18px;stroke:var(--amber);fill:none;stroke-width:1.8}
+.home-card-text{flex:1}
+.home-card-label{font-size:13px;font-weight:500;color:var(--ink)}
+.home-card-desc{font-size:11px;color:var(--ink-muted);margin-top:2px}
+.home-start-btn{
+  width:100%;
+  padding:16px;
+  background:var(--ink);
+  color:var(--cream);
+  border-radius:14px;
+  font-size:16px;
+  font-weight:500;
+  letter-spacing:.05em;
+  transition:transform .15s,box-shadow .2s;
+  box-shadow:0 6px 20px rgba(45,53,97,.25);
+}
+.home-start-btn:active{transform:scale(.97)}
+.home-start-btn .arrow{
+  display:inline-block;
+  margin-left:8px;
+  transition:transform .2s;
+}
+.home-start-btn:hover .arrow{transform:translateX(4px)}
+.home-footer{
+  text-align:center;
+  font-size:11px;
+  color:var(--ink-muted);
+  margin-top:auto;
+  padding-top:24px;
+}
+
+/* ========== 答题页 ========== */
+#view-quiz{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:20px 24px 28px;
+}
+.quiz-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.quiz-back{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.quiz-back:active{background:var(--line)}
+.quiz-back svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2}
+.quiz-progress-text{
+  font-size:13px;
+  color:var(--ink-muted);
+  font-weight:500;
+}
+.quiz-progress-text b{color:var(--ink);font-size:16px;font-weight:700}
+.quiz-progress-track{
+  height:4px;
+  background:var(--line);
+  border-radius:2px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.quiz-progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--amber),var(--amber-light));
+  border-radius:2px;
+  transition:width .4s cubic-bezier(.22,.61,.36,1);
+  width:0%;
+}
+.quiz-node-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:28px;
+  padding:0 2px;
+  gap:3px;
+}
+.quiz-node{
+  flex:1;
+  height:5px;
+  border-radius:3px;
+  background:var(--line);
+  transition:background .3s;
+}
+.quiz-node.done{background:var(--amber-light)}
+.quiz-node.current{background:var(--ink)}
+.quiz-question-num{
+  font-family:var(--serif);
+  font-size:13px;
+  color:var(--amber);
+  letter-spacing:.15em;
+  margin-bottom:12px;
+  font-weight:600;
+}
+.quiz-question-text{
+  font-family:var(--serif);
+  font-size:19px;
+  font-weight:600;
+  line-height:1.65;
+  color:var(--ink);
+  margin-bottom:28px;
+  min-height:62px;
+}
+.quiz-options{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  flex:1;
+}
+.quiz-option{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:13px 18px;
+  background:var(--cream-card);
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  transition:background .2s,border-color .2s,transform .1s;
+  position:relative;
+  overflow:hidden;
+  /* 选中色由JS按程度注入 */
+  --sel:#2D3561;
+  --sel-text:#F7F4EE;
+  --sel-sub:rgba(247,244,238,.7);
+}
+.quiz-option:active{transform:scale(.98)}
+.quiz-option.selected{
+  border-color:var(--sel);
+  background:var(--sel);
+}
+.quiz-option.selected .opt-label{color:var(--sel-text)}
+.quiz-option.selected .opt-desc{color:var(--sel-sub)}
+.quiz-option.selected .opt-dot{
+  border-color:var(--sel-text);
+  background:var(--sel-text);
+}
+.quiz-option.selected .opt-dot::after{
+  opacity:1;transform:scale(1);
+  background:var(--sel);
+}
+.opt-dot{
+  width:20px;height:20px;
+  border-radius:50%;
+  border:2px solid var(--ink-muted);
+  flex-shrink:0;
+  position:relative;
+  transition:all .2s;
+}
+.opt-dot::after{
+  content:'';
+  position:absolute;
+  inset:4px;
+  border-radius:50%;
+  background:var(--ink);
+  opacity:0;
+  transform:scale(0);
+  transition:all .2s;
+}
+.opt-text{flex:1}
+.opt-label{
+  font-size:14px;
+  font-weight:500;
+  color:var(--ink);
+  transition:color .2s;
+}
+.opt-desc{
+  font-size:11px;
+  color:var(--ink-muted);
+  margin-top:1px;
+  transition:color .2s;
+}
+.opt-degree-bar{
+  width:4px;
+  height:28px;
+  border-radius:2px;
+  flex-shrink:0;
+  opacity:.35;
+  transition:opacity .2s,background .2s;
+}
+.quiz-option.selected .opt-degree-bar{opacity:.9;background:var(--sel-text)!important}
+
+.quiz-nav{
+  display:flex;
+  gap:12px;
+  margin-top:22px;
+}
+.quiz-btn{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:500;
+  transition:all .15s;
+}
+.quiz-btn:active{transform:scale(.97)}
+.quiz-btn-prev{
+  background:var(--cream-card);
+  border:1.5px solid var(--line);
+  color:var(--ink-muted);
+}
+.quiz-btn-prev:disabled{opacity:.4;cursor:not-allowed}
+.quiz-btn-next{
+  background:var(--ink);
+  color:var(--cream);
+  box-shadow:0 4px 14px rgba(45,53,97,.2);
+}
+.quiz-btn-next:disabled{
+  opacity:.4;
+  box-shadow:none;
+  cursor:not-allowed;
+}
+
+/* ========== 结果页 ========== */
+#view-result{
+  min-height:100vh;
+  padding:32px 24px 40px;
+}
+.result-header{
+  text-align:center;
+  margin-bottom:28px;
+}
+.result-eyebrow{
+  font-size:11px;
+  letter-spacing:.3em;
+  color:var(--amber);
+  text-transform:uppercase;
+  margin-bottom:10px;
+  font-weight:500;
+}
+.result-role{
+  font-family:var(--serif);
+  font-size:28px;
+  font-weight:700;
+  color:var(--ink);
+  margin-bottom:6px;
+}
+.result-role-en{
+  font-size:12px;
+  color:var(--ink-muted);
+  letter-spacing:.1em;
+}
+.result-desc{
+  font-size:14px;
+  color:var(--ink-light);
+  line-height:1.8;
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px 18px;
+  margin-bottom:28px;
+}
+.result-section-title{
+  font-family:var(--serif);
+  font-size:16px;
+  font-weight:600;
+  color:var(--ink);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.result-section-title::before{
+  content:'';
+  width:3px;height:16px;
+  background:var(--amber);
+  border-radius:2px;
+}
+.radar-wrap{
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px 16px 16px;
+  margin-bottom:28px;
+  display:flex;
+  justify-content:center;
+}
+.radar-wrap svg{width:100%;max-width:320px;height:auto}
+.dim-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:28px;
+}
+.dim-item{
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:9px 13px;
+}
+.dim-item-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+}
+.dim-name{
+  font-size:12px;
+  font-weight:500;
+  color:var(--ink);
+}
+.dim-pct{
+  font-size:12px;
+  font-weight:700;
+  color:var(--amber);
+  font-family:var(--serif);
+  font-variant-numeric:tabular-nums;
+}
+.dim-bar-track{
+  height:4px;
+  background:var(--line);
+  border-radius:2px;
+  overflow:hidden;
+}
+.dim-bar-fill{
+  height:100%;
+  border-radius:2px;
+  background:linear-gradient(90deg,var(--ink),var(--ink-light));
+  transition:width 1s cubic-bezier(.22,.61,.36,1);
+  width:0%;
+}
+.dim-item.top .dim-bar-fill{
+  background:linear-gradient(90deg,var(--amber),var(--amber-light));
+}
+.career-card{
+  background:var(--ink);
+  border-radius:14px;
+  padding:22px 20px;
+  margin-bottom:20px;
+  color:var(--cream);
+}
+.career-card .result-section-title{color:var(--cream)}
+.career-card .result-section-title::before{background:var(--amber)}
+.career-text{
+  font-size:13px;
+  line-height:1.8;
+  color:rgba(247,244,238,.85);
+}
+.career-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+.career-tag{
+  font-size:11px;
+  padding:5px 12px;
+  border-radius:20px;
+  background:rgba(232,163,61,.2);
+  color:var(--amber-light);
+  border:1px solid rgba(232,163,61,.3);
+}
+.insight-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:28px;
+}
+.insight-box{
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:16px 14px;
+}
+.insight-box.strength{border-left:3px solid var(--amber)}
+.insight-box.watchout{border-left:3px solid var(--ink-muted)}
+.insight-label{
+  font-size:11px;
+  color:var(--ink-muted);
+  margin-bottom:6px;
+  letter-spacing:.05em;
+}
+.insight-text{
+  font-size:12px;
+  color:var(--ink-light);
+  line-height:1.6;
+}
+.result-actions{
+  display:flex;
+  gap:12px;
+}
+.result-btn{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:500;
+  transition:all .15s;
+}
+.result-btn:active{transform:scale(.97)}
+.result-btn-restart{
+  background:var(--cream-card);
+  border:1.5px solid var(--line);
+  color:var(--ink);
+}
+.result-btn-share{
+  background:var(--ink);
+  color:var(--cream);
+}
+
+/* ========== Toast ========== */
+.toast{
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(45,53,97,.92);
+  color:var(--cream);
+  padding:12px 24px;
+  border-radius:10px;
+  font-size:14px;
+  z-index:999;
+  animation:fadeIn .2s;
+  backdrop-filter:blur(4px);
+}
+
+/* ========== 低调署名 ========== */
+.kaisu-mark{
+  text-align:center;
+  font-size:9px;
+  letter-spacing:.5em;
+  color:var(--ink-muted);
+  opacity:.35;
+  padding:20px 0 8px;
+  font-weight:500;
+  user-select:none;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ========== 首页 ========== -->
+  <section id="view-home" class="view">
+    <div class="home-bg-deco"></div>
+    <div class="home-bg-deco2"></div>
+    <div class="home-compass">
+      <svg viewBox="0 0 72 72" fill="none">
+        <circle cx="36" cy="36" r="34" stroke="#2D3561" stroke-width="1.5" opacity=".3"/>
+        <circle cx="36" cy="36" r="26" stroke="#2D3561" stroke-width="1" opacity=".2" stroke-dasharray="3 3"/>
+        <polygon points="36,14 40,36 36,58 32,36" fill="#E8A33D" opacity=".9"/>
+        <polygon points="36,14 40,36 36,36" fill="#2D3561"/>
+        <circle cx="36" cy="36" r="4" fill="#2D3561"/>
+        <circle cx="36" cy="36" r="2" fill="#E8A33D"/>
+        <text x="36" y="10" text-anchor="middle" font-size="7" fill="#2D3561" font-family="serif" font-weight="700">N</text>
+      </svg>
+    </div>
+    <div class="home-eyebrow">CAREER COMPASS</div>
+    <h1 class="home-title">职业罗盘<br>自我认知测评</h1>
+    <p class="home-subtitle">60道题，探索你的职业性格底色<br>找到属于你的成长方向</p>
+
+    <div class="home-card">
+      <div class="home-card-row">
+        <div class="home-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <div class="home-card-text">
+          <div class="home-card-label">60道精选题目</div>
+          <div class="home-card-desc">覆盖8大职业性格维度，含反向校验题</div>
+        </div>
+      </div>
+      <div class="home-card-row">
+        <div class="home-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <div class="home-card-text">
+          <div class="home-card-label">7级直觉选择</div>
+          <div class="home-card-desc">从「完全就是我」到「完全不是我」</div>
+        </div>
+      </div>
+      <div class="home-card-row">
+        <div class="home-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="home-card-text">
+          <div class="home-card-label">8类职业画像</div>
+          <div class="home-card-desc">雷达图+维度占比+发展建议</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="home-start-btn" onclick="startQuiz()">
+      开始探索<span class="arrow">→</span>
+    </button>
+    <div class="home-footer">凭第一直觉作答 · 约需6-8分钟 · 结果仅供参考</div>
+  </section>
+
+  <!-- ========== 答题页 ========== -->
+  <section id="view-quiz" class="view hidden">
+    <div class="quiz-top">
+      <button class="quiz-back" onclick="goHome()" aria-label="返回">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="quiz-progress-text"><b id="q-current">1</b> / 60</div>
+    </div>
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="quiz-node-row" id="node-row"></div>
+
+    <div class="quiz-question-num" id="q-num">QUESTION 01</div>
+    <div class="quiz-question-text" id="q-text"></div>
+
+    <div class="quiz-options" id="options-wrap"></div>
+
+    <div class="quiz-nav">
+      <button class="quiz-btn quiz-btn-prev" id="btn-prev" onclick="prevQuestion()">上一题</button>
+      <button class="quiz-btn quiz-btn-next" id="btn-next" onclick="nextQuestion()" disabled>下一题</button>
+    </div>
+  </section>
+
+  <!-- ========== 结果页 ========== -->
+  <section id="view-result" class="view hidden">
+    <div class="result-header">
+      <div class="result-eyebrow">YOUR PROFILE</div>
+      <div class="result-role" id="result-role"></div>
+      <div class="result-role-en" id="result-role-en"></div>
+    </div>
+
+    <div class="result-desc" id="result-desc"></div>
+
+    <div class="result-section-title">八维特征雷达</div>
+    <div class="radar-wrap">
+      <svg id="radar-svg" viewBox="0 0 320 320"></svg>
+    </div>
+
+    <div class="result-section-title">各维度占比</div>
+    <div class="dim-list" id="dim-list"></div>
+
+    <div class="insight-grid">
+      <div class="insight-box strength">
+        <div class="insight-label">核心优势</div>
+        <div class="insight-text" id="insight-strength"></div>
+      </div>
+      <div class="insight-box watchout">
+        <div class="insight-label">成长提醒</div>
+        <div class="insight-text" id="insight-watchout"></div>
+      </div>
+    </div>
+
+    <div class="career-card">
+      <div class="result-section-title">适合发展方向</div>
+      <div class="career-text" id="career-text"></div>
+      <div class="career-tags" id="career-tags"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="result-btn result-btn-restart" onclick="restart()">重新测评</button>
+      <button class="result-btn result-btn-share" onclick="shareResult()">保存结果</button>
+    </div>
+  </section>
+
+  <!-- 低调署名 -->
+  <div class="kaisu-mark">KAISU</div>
+
+</div>
+
+<script>
+/* ========== 数据：60道题（含反向校验题 rev:true） ========== */
+const QUESTIONS = [
+  /* —— 实干执行 8题 —— */
+  {dim:"实干", text:"我更喜欢动手落地完成事情，而不是停留在空想方案"},
+  {dim:"创新", text:"我乐于接受全新想法，愿意尝试未知的事物"},
+  {dim:"社交", text:"我享受与人沟通协作，喜欢组织集体活动"},
+  {dim:"逻辑", text:"做决定时，我习惯依靠逻辑理性分析利弊"},
+  {dim:"统筹", text:"我习惯提前做好计划，按步骤推进目标"},
+  {dim:"艺术", text:"我对审美、创意表达类事情抱有浓厚兴趣"},
+  {dim:"服务", text:"我希望工作可以帮助他人，为别人提供价值"},
+  {dim:"独立", text:"我更喜欢独立思考完成任务，减少外界干扰"},
+  {dim:"实干", text:"面对任务，我优先关注实际可执行的步骤"},
+  {dim:"创新", text:"我经常冒出新奇点子，喜欢突破固有模式"},
+  {dim:"社交", text:"在团队中我愿意主动协调不同人的想法"},
+  {dim:"逻辑", text:"遇到问题我会客观拆解，不被情绪左右判断"},
+  {dim:"统筹", text:"我擅长梳理长远目标，规划学习与职业路径"},
+  {dim:"艺术", text:"我喜欢用文字、画面、构思去表达自我想法"},
+  {dim:"服务", text:"看到他人困难，我愿意主动伸出援手"},
+  {dim:"独立", text:"复杂问题我倾向独自钻研，不依赖他人意见"},
+  {dim:"实干", text:"相比于理论研究，我更看重实践产出的结果"},
+  {dim:"创新", text:"我不害怕失败，愿意为新的尝试承担风险"},
+  {dim:"社交", text:"参加聚会集体场合，我会主动融入交流"},
+  {dim:"逻辑", text:"评判一件事对错，我看重证据与客观事实"},
+  {dim:"统筹", text:"生活学习中我习惯制作清单，把控时间进度"},
+  {dim:"艺术", text:"我容易感知环境氛围，对美感细节比较敏感"},
+  {dim:"服务", text:"我希望未来工作能够带来社会层面的价值"},
+  {dim:"独立", text:"多人讨论时，我更多时候选择旁观思考"},
+  {dim:"实干", text:"接到任务，我习惯尽快动手开始做"},
+  {dim:"创新", text:"我讨厌一成不变，期待工作有变化和新鲜感"},
+  {dim:"社交", text:"处理矛盾分歧，我愿意充当调解沟通角色"},
+  {dim:"逻辑", text:"制定规划时，我会权衡多种方案的优劣得失"},
+  {dim:"统筹", text:"我会思考未来职业路径，提前储备相关能力"},
+  {dim:"艺术", text:"我更愿意从事可以发挥想象力的工作内容"},
+  /* —— 第二轮：深化题与反向校验题交错排列 —— */
+  {dim:"实干", text:"我擅长把复杂的想法拆解成可操作的小步骤"},
+  {dim:"创新", text:"我更倾向于遵循成熟的方法，而不是自己另辟蹊径", rev:true},
+  {dim:"社交", text:"我能很快和陌生人找到共同话题"},
+  {dim:"逻辑", text:"我做决定时更容易被情感和直觉驱动", rev:true},
+  {dim:"统筹", text:"多任务并行时，我能合理安排优先级"},
+  {dim:"艺术", text:"我更关注事物的功能实用性，而非形式美感", rev:true},
+  {dim:"服务", text:"帮助别人解决问题会让我获得很大的满足感"},
+  {dim:"独立", text:"我更喜欢在讨论中碰撞想法，而不是独自琢磨", rev:true},
+  {dim:"实干", text:"我有时会因为过度思考而迟迟无法开始行动", rev:true},
+  {dim:"创新", text:"我喜欢用不同寻常的方式解决问题"},
+  {dim:"社交", text:"长时间的社交活动会让我感到疲惫，需要独处恢复", rev:true},
+  {dim:"逻辑", text:"我喜欢找出事物背后的因果关系和规律"},
+  {dim:"统筹", text:"我更喜欢随机应变，而不是提前做详细计划", rev:true},
+  {dim:"艺术", text:"看到好的设计或作品，我会忍不住分析它的构成"},
+  {dim:"服务", text:"我认为工作首先是实现个人价值，其次才是帮助他人", rev:true},
+  {dim:"独立", text:"我享受一个人安静地深入研究某个问题的过程"},
+  {dim:"实干", text:"与其反复讨论方案，我更愿意先做出一个雏形看看"},
+  {dim:"创新", text:"不确定性会让我感到不安，我更喜欢可预测的环境", rev:true},
+  {dim:"社交", text:"我擅长观察团队氛围并适时调节"},
+  {dim:"逻辑", text:"面对复杂数据和推理，我容易感到烦躁", rev:true},
+  {dim:"统筹", text:"我习惯为可能的风险提前准备预案"},
+  {dim:"艺术", text:"我经常在脑海中构建各种画面和故事"},
+  {dim:"服务", text:"我能敏锐察觉到他人的情绪变化和需求"},
+  {dim:"独立", text:"相比团队合作，我更习惯独自完成学习任务"},
+  {dim:"实干", text:"我更享受构思方案的过程，而不是执行落地的过程", rev:true},
+  {dim:"创新", text:"面对陌生领域，我会感到兴奋而不是焦虑"},
+  {dim:"社交", text:"在群体中我更倾向于倾听，而不是主导讨论", rev:true},
+  {dim:"逻辑", text:"讨论问题时，我能敏锐发现其中的逻辑漏洞"},
+  {dim:"服务", text:"我愿意花时间参与志愿服务或公益活动"},
+  {dim:"独立", text:"遇到难题时，我第一反应是自己查资料而不是问人"}
+];
+
+/* ========== 7级选项（生动文案 + 程度渐变色） ========== */
+/* 暖色=认同，冷色=不认同，由强到弱渐变 */
+const OPTIONS = [
+  {label:"完全就是我", desc:"和我一模一样",       score:3,  color:"#B87014", bar:"#B87014"},
+  {label:"基本是这样", desc:"大部分时候符合",     score:2,  color:"#D9912A", bar:"#D9912A"},
+  {label:"有一点像",   desc:"偶尔会这样",         score:1,  color:"#E8B45C", bar:"#E8B45C"},
+  {label:"是也不是",   desc:"说不准，看情况",     score:0,  color:"#8A8FA8", bar:"#8A8FA8"},
+  {label:"有一点不像", desc:"偶尔不这样",         score:-1, color:"#7B84B0", bar:"#7B84B0"},
+  {label:"基本不是",   desc:"大部分时候不符合",   score:-2, color:"#4A5490", bar:"#4A5490"},
+  {label:"完全不是我", desc:"和我截然相反",       score:-3, color:"#2D3561", bar:"#2D3561"}
+];
+
+/* ========== 8维度信息 ========== */
+const DIMS = {
+  "实干":  {name:"实干执行", en:"Practical Execution"},
+  "创新":  {name:"创新探索", en:"Innovation"},
+  "社交":  {name:"社交协调", en:"Social Coordination"},
+  "逻辑":  {name:"逻辑思辨", en:"Logical Thinking"},
+  "统筹":  {name:"规划统筹", en:"Planning"},
+  "艺术":  {name:"艺术创意", en:"Artistic Creativity"},
+  "服务":  {name:"服务奉献", en:"Service"},
+  "独立":  {name:"独立钻研", en:"Independence"}
+};
+const DIM_ORDER = ["实干","创新","社交","逻辑","统筹","艺术","服务","独立"];
+
+/* ========== 8类角色画像 ========== */
+const ROLES = {
+  "实干": {
+    name:"实干执行家",
+    en:"THE DOER",
+    desc:"你是脚踏实地的行动派。注重落地与结果，擅长把想法转化为现实。做事可靠、执行力强，是团队中最值得信赖的交付者。你相信'做'比'想'更有力量，在实践中不断积累经验与自信。",
+    strength:"行动力强、务实可靠、注重结果交付，能在压力下高效推进任务。",
+    watchout:"有时可能过于关注眼前执行，忽视长远规划与创新突破。建议偶尔抬头看路，给自己留出思考与探索的空间。",
+    career:"工程技术、项目管理、运营执行、生产管理、技术运维、供应链等需要强执行力的领域。",
+    tags:["工程技术","项目管理","运营执行","技术运维","供应链"]
+  },
+  "创新": {
+    name:"创新探索者",
+    en:"THE EXPLORER",
+    desc:"你是充满好奇心的开拓者。思维开放、敢于尝试，乐于突破固有框架。你对未知充满热情，不畏惧失败，总能在变化中发现新的可能性，是推动变革与创新的关键力量。",
+    strength:"思维活跃、敢于冒险、适应变化能力强，能不断产出新想法与新方案。",
+    watchout:"兴趣广泛但可能缺乏持久专注，容易三分钟热度。建议学会聚焦，将创意落地为可执行的成果。",
+    career:"产品研发、创意策划、市场新业务、用户研究、前沿技术探索、创业等需要创新精神的领域。",
+    tags:["产品研发","创意策划","市场探索","用户研究","创业"]
+  },
+  "社交": {
+    name:"社交协调者",
+    en:"THE CONNECTOR",
+    desc:"你是天生的人际桥梁。擅长沟通、善于理解他人，乐于在团队中扮演协调者角色。你能敏锐感知他人需求，调动团队氛围，让不同性格的人顺畅合作，是组织中不可或缺的润滑剂。",
+    strength:"沟通能力强、共情力好、善于协调资源与关系，团队凝聚力的核心。",
+    watchout:"可能过度在意他人评价，难以拒绝不合理请求。建议建立边界感，学会在照顾他人的同时保护自己的精力。",
+    career:"人力资源、公关传播、销售商务、行政管理、社团运营、客户成功、咨询等需要人际互动的领域。",
+    tags:["人力资源","公关传播","销售商务","行政管理","客户成功"]
+  },
+  "逻辑": {
+    name:"逻辑思辨者",
+    en:"THE ANALYST",
+    desc:"你是理性冷静的思考者。擅长拆解问题、依靠逻辑推理判断，重视事实与证据。你不被情绪左右，能在复杂局面中梳理出清晰脉络，做出客观、有依据的决策。",
+    strength:"分析能力强、客观理性、决策有依据，能在复杂信息中抓住本质。",
+    watchout:"可能过于理性而忽视情感因素，在人际互动中显得疏离。建议培养对他人情绪的感知与回应能力。",
+    career:"数据分析、算法工程、法律合规、风险控制、科研分析、战略研究、技术开发等需要逻辑推理的领域。",
+    tags:["数据分析","算法工程","法律合规","风险控制","科研分析"]
+  },
+  "统筹": {
+    name:"规划统筹者",
+    en:"THE ARCHITECT",
+    desc:"你是胸有蓝图的规划师。擅长长远布局、目标感强，习惯计划先行、按部就班。你能梳理复杂流程、把控整体进度，让事情有条不紊地推进，是组织中可靠的掌舵人。",
+    strength:"规划能力强、目标清晰、善于统筹资源与时间，做事有条理。",
+    watchout:"可能过于依赖计划，面对突发变化时适应性不足。建议培养弹性思维，在计划与灵活之间找到平衡。",
+    career:"项目管理、战略规划、运营管理、行政统筹、产品管理、活动策划等需要全局视野的领域。",
+    tags:["项目管理","战略规划","运营管理","产品管理","活动策划"]
+  },
+  "艺术": {
+    name:"艺术创意者",
+    en:"THE CREATOR",
+    desc:"你是感知细腻的创作者。审美敏锐、想象力丰富，擅长通过各种形式表达想法。你对美有独特的追求，能在平凡中发现灵感，用创意为世界增添色彩与意义。",
+    strength:"审美力强、想象力丰富、表达能力独特，能产出有感染力的创意作品。",
+    watchout:"可能对现实细节不够关注，在落地执行上需要他人协助。建议培养将创意转化为实际成果的执行力。",
+    career:"视觉设计、新媒体创作、文案策划、影视制作、文创产品、品牌设计、艺术教育等创意领域。",
+    tags:["视觉设计","新媒体","文案策划","影视制作","品牌设计"]
+  },
+  "服务": {
+    name:"服务奉献者",
+    en:"THE GIVER",
+    desc:"你是温暖有爱的利他者。共情力强、乐于帮助他人，看重工作的社会价值。你希望自己的努力能为他人带来积极改变，在服务与奉献中找到深层的意义感与满足。",
+    strength:"共情力强、有责任感、关注他人需求，能建立深厚的信任关系。",
+    watchout:"可能过度付出而忽视自身需求，容易产生职业倦怠。建议学会自我关怀，在帮助他人与照顾自己之间保持平衡。",
+    career:"教育教学、医疗健康、社会工作、公益组织、公共服务、心理咨询、客户服务等利他型领域。",
+    tags:["教育教学","医疗健康","社会工作","公益组织","心理咨询"]
+  },
+  "独立": {
+    name:"独立钻研者",
+    en:"THE SCHOLAR",
+    desc:"你是专注深度的研究者。享受独处思考、喜欢自主完成任务，不喜欢过多社交干扰。你能在一个领域里长期深耕，追求专业上的精进与突破，是安静而有力量的深耕者。",
+    strength:"专注力强、自主学习能力好、能在专业领域深度钻研，做事有深度。",
+    watchout:"可能过于封闭，错过协作与交流带来的新视角。建议适度打开自己，在独立思考与团队协作之间找到平衡。",
+    career:"科学研究、编程开发、学术研究、专业技术深耕、文献分析、自由创作等需要深度专注的领域。",
+    tags:["科学研究","编程开发","学术研究","专业技术","自由创作"]
+  }
+};
+
+/* ========== 状态 ========== */
+const TOTAL = QUESTIONS.length;
+let currentIdx = 0;
+let answers = new Array(TOTAL).fill(null);
+let isTransitioning = false;
+
+/* ========== 视图切换 ========== */
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.animation='none';
+  void el.offsetWidth;
+  el.style.animation='';
+  window.scrollTo(0,0);
+}
+
+function goHome(){
+  if(confirm('确定要返回首页吗？当前答题进度将丢失。')){
+    currentIdx=0;
+    answers.fill(null);
+    showView('view-home');
+  }
+}
+
+/* ========== 开始答题 ========== */
+function startQuiz(){
+  currentIdx=0;
+  answers.fill(null);
+  renderNodes();
+  renderQuestion();
+  showView('view-quiz');
+}
+
+/* ========== 渲染节点进度（12段，每段5题） ========== */
+function renderNodes(){
+  const row = document.getElementById('node-row');
+  row.innerHTML='';
+  const segCount = 12;
+  for(let i=0;i<segCount;i++){
+    const node = document.createElement('div');
+    node.className='quiz-node';
+    node.id='node-'+i;
+    row.appendChild(node);
+  }
+}
+
+function updateNodes(){
+  const segCount = 12;
+  const segment = Math.floor(currentIdx / (TOTAL/segCount));
+  for(let i=0;i<segCount;i++){
+    const node = document.getElementById('node-'+i);
+    if(!node) continue;
+    node.className='quiz-node';
+    if(i < segment) node.classList.add('done');
+    else if(i === segment) node.classList.add('current');
+  }
+}
+
+/* ========== 渲染题目 ========== */
+function renderQuestion(){
+  const q = QUESTIONS[currentIdx];
+  document.getElementById('q-current').textContent = currentIdx+1;
+  document.getElementById('q-num').textContent = 'QUESTION ' + String(currentIdx+1).padStart(2,'0');
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-fill').style.width = (currentIdx/TOTAL*100)+'%';
+  updateNodes();
+
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML='';
+  OPTIONS.forEach((opt,idx)=>{
+    const div = document.createElement('div');
+    const isSel = answers[currentIdx]===idx;
+    div.className = 'quiz-option' + (isSel?' selected':'');
+    div.style.setProperty('--sel', opt.color);
+    div.innerHTML = `
+      <div class="opt-dot"></div>
+      <div class="opt-text">
+        <div class="opt-label">${opt.label}</div>
+        <div class="opt-desc">${opt.desc}</div>
+      </div>
+      <div class="opt-degree-bar" style="background:${opt.bar}"></div>
+    `;
+    div.onclick = (e)=>selectOption(idx,e);
+    wrap.appendChild(div);
+  });
+
+  document.getElementById('btn-prev').disabled = currentIdx===0;
+  document.getElementById('btn-next').disabled = answers[currentIdx]===null;
+  document.getElementById('btn-next').textContent = currentIdx===TOTAL-1?'查看结果':'下一题';
+}
+
+/* ========== 选项内部程度色波纹闪光 ========== */
+function playOptionRipple(optionEl, color, ev){
+  // 清除残留波纹
+  optionEl.querySelectorAll('.opt-ripple').forEach(r=>r.remove());
+  const rect = optionEl.getBoundingClientRect();
+  // 波纹直径取选项对角线的2.2倍，保证从点击处扩散能铺满整张卡片
+  const size = Math.ceil(Math.hypot(rect.width, rect.height) * 2.2);
+  const ripple = document.createElement('span');
+  ripple.className = 'opt-ripple';
+  ripple.style.width = size+'px';
+  ripple.style.height = size+'px';
+  ripple.style.background = color;
+  // 以点击位置为圆心（无事件时取卡片中心）
+  const cx = ev ? (ev.clientX - rect.left) : rect.width/2;
+  const cy = ev ? (ev.clientY - rect.top) : rect.height/2;
+  ripple.style.left = (cx - size/2)+'px';
+  ripple.style.top = (cy - size/2)+'px';
+  optionEl.appendChild(ripple);
+}
+
+/* ========== 选择选项 ========== */
+function selectOption(idx, ev){
+  if(isTransitioning) return;
+  answers[currentIdx]=idx;
+  const opt = OPTIONS[idx];
+  // 重绘选项（此时不显示为selected实心态）
+  renderQuestion();
+  // 只在被点中的选项内部播放程度色波纹
+  const optionEls = document.querySelectorAll('#options-wrap .quiz-option');
+  const target = optionEls[idx];
+  if(target){
+    target.classList.add('flashing');
+    playOptionRipple(target, opt.color, ev);
+  }
+  isTransitioning = true;
+  // 波纹铺满卡片后切换题目，重绘即恢复
+  setTimeout(()=>{
+    if(currentIdx < TOTAL-1){
+      currentIdx++;
+      renderQuestion();
+    }else{
+      showResult();
+    }
+    isTransitioning=false;
+  },320);
+}
+
+function prevQuestion(){
+  if(currentIdx>0){
+    currentIdx--;
+    renderQuestion();
+  }
+}
+
+function nextQuestion(){
+  if(answers[currentIdx]===null){
+    showToast('请先选择一个选项');
+    return;
+  }
+  if(currentIdx < TOTAL-1){
+    currentIdx++;
+    renderQuestion();
+  }else{
+    showResult();
+  }
+}
+
+/* ========== 计算结果（反向题取反） ========== */
+function calcScores(){
+  const scores = {};
+  DIM_ORDER.forEach(d=>scores[d]=0);
+  for(let i=0;i<TOTAL;i++){
+    if(answers[i]===null) continue;
+    let score = OPTIONS[answers[i]].score;
+    if(QUESTIONS[i].rev) score = -score;
+    scores[QUESTIONS[i].dim] += score;
+  }
+  return scores;
+}
+
+function showResult(){
+  document.getElementById('progress-fill').style.width='100%';
+  const scores = calcScores();
+
+  let topDim = DIM_ORDER[0];
+  let maxScore = -Infinity;
+  DIM_ORDER.forEach(d=>{
+    if(scores[d]>maxScore){maxScore=scores[d];topDim=d;}
+  });
+  const role = ROLES[topDim];
+
+  const totalAbs = DIM_ORDER.reduce((s,d)=>s+Math.abs(scores[d]),0);
+  const percents = {};
+  DIM_ORDER.forEach(d=>{
+    percents[d] = totalAbs===0 ? 12.5 : Math.abs(scores[d])/totalAbs*100;
+  });
+
+  document.getElementById('result-role').textContent = role.name;
+  document.getElementById('result-role-en').textContent = role.en;
+  document.getElementById('result-desc').textContent = role.desc;
+  document.getElementById('insight-strength').textContent = role.strength;
+  document.getElementById('insight-watchout').textContent = role.watchout;
+  document.getElementById('career-text').textContent = role.career;
+
+  const tagsWrap = document.getElementById('career-tags');
+  tagsWrap.innerHTML='';
+  role.tags.forEach(t=>{
+    const span = document.createElement('span');
+    span.className='career-tag';
+    span.textContent=t;
+    tagsWrap.appendChild(span);
+  });
+
+  renderRadar(scores, topDim);
+
+  const dimList = document.getElementById('dim-list');
+  dimList.innerHTML='';
+  const sorted = [...DIM_ORDER].sort((a,b)=>percents[b]-percents[a]);
+  sorted.forEach((d)=>{
+    const item = document.createElement('div');
+    item.className = 'dim-item' + (d===topDim?' top':'');
+    item.innerHTML = `
+      <div class="dim-item-top">
+        <span class="dim-name">${DIMS[d].name}</span>
+        <span class="dim-pct">${percents[d].toFixed(2)}%</span>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" data-width="${percents[d].toFixed(2)}%"></div>
+      </div>
+    `;
+    dimList.appendChild(item);
+  });
+
+  showView('view-result');
+
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-bar-fill').forEach(el=>{
+      el.style.width = el.dataset.width;
+    });
+  },100);
+}
+
+/* ========== 雷达图渲染 ========== */
+function renderRadar(scores, topDim){
+  const svg = document.getElementById('radar-svg');
+  const cx=160, cy=160, maxR=110;
+  const n = 8;
+  const angleStep = (Math.PI*2)/n;
+  const startAngle = -Math.PI/2;
+  const maxAbs = Math.max(...DIM_ORDER.map(d=>Math.abs(scores[d])), 1);
+
+  let html = '';
+  for(let layer=1;layer<=4;layer++){
+    const r = maxR*layer/4;
+    let points = [];
+    for(let i=0;i<n;i++){
+      const angle = startAngle + i*angleStep;
+      points.push((cx+r*Math.cos(angle))+','+(cy+r*Math.sin(angle)));
+    }
+    html += `<polygon points="${points.join(' ')}" fill="none" stroke="#E5DFD3" stroke-width="1"/>`;
+  }
+  for(let i=0;i<n;i++){
+    const angle = startAngle + i*angleStep;
+    const x2 = cx+maxR*Math.cos(angle);
+    const y2 = cy+maxR*Math.sin(angle);
+    html += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="#E5DFD3" stroke-width="1"/>`;
+  }
+  let dataPoints = [];
+  for(let i=0;i<n;i++){
+    const d = DIM_ORDER[i];
+    const val = Math.abs(scores[d])/maxAbs;
+    const r = maxR * Math.max(val, 0.15);
+    const angle = startAngle + i*angleStep;
+    dataPoints.push((cx+r*Math.cos(angle))+','+(cy+r*Math.sin(angle)));
+  }
+  html += `<polygon points="${dataPoints.join(' ')}" fill="rgba(232,163,61,.25)" stroke="#E8A33D" stroke-width="2"/>`;
+  for(let i=0;i<n;i++){
+    const d = DIM_ORDER[i];
+    const val = Math.abs(scores[d])/maxAbs;
+    const r = maxR * Math.max(val, 0.15);
+    const angle = startAngle + i*angleStep;
+    const px = cx+r*Math.cos(angle);
+    const py = cy+r*Math.sin(angle);
+    const isTop = d===topDim;
+    html += `<circle cx="${px}" cy="${py}" r="${isTop?5:3.5}" fill="${isTop?'#E8A33D':'#2D3561'}"/>`;
+  }
+  for(let i=0;i<n;i++){
+    const d = DIM_ORDER[i];
+    const angle = startAngle + i*angleStep;
+    const labelR = maxR + 22;
+    const lx = cx+labelR*Math.cos(angle);
+    const ly = cy+labelR*Math.sin(angle);
+    const isTop = d===topDim;
+    const anchor = Math.abs(Math.cos(angle))<0.3 ? 'middle' : (Math.cos(angle)>0?'start':'end');
+    html += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle"
+      font-size="11" font-family="'Noto Sans SC',sans-serif"
+      fill="${isTop?'#E8A33D':'#4A5490'}" font-weight="${isTop?'700':'400'}">${DIMS[d].name}</text>`;
+  }
+  svg.innerHTML = html;
+}
+
+/* ========== 重新测评 ========== */
+function restart(){
+  currentIdx=0;
+  answers.fill(null);
+  showView('view-home');
+}
+
+/* ========== 保存结果 ========== */
+function shareResult(){
+  showToast('请截图保存你的测评结果');
+}
+
+/* ========== Toast ========== */
+function showToast(msg){
+  const existing = document.querySelector('.toast');
+  if(existing) existing.remove();
+  const t = document.createElement('div');
+  t.className='toast';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),1800);
+}
+
+/* ========== 键盘支持 ========== */
+document.addEventListener('keydown',(e)=>{
+  if(document.getElementById('view-quiz').classList.contains('hidden')) return;
+  if(e.key>='1'&&e.key<='7'){
+    const idx = parseInt(e.key)-1;
+    if(idx<OPTIONS.length) selectOption(idx);
+  }
+  if(e.key==='ArrowLeft') prevQuestion();
+  if(e.key==='ArrowRight') nextQuestion();
+});
+</script>
+</body>
+</html>
