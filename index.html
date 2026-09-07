@@ -419,10 +419,31 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   color:var(--ink);
   margin-bottom:6px;
 }
-.result-role-en{
-  font-size:12px;
-  color:var(--ink-muted);
-  letter-spacing:.1em;
+.result-code-line{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  margin-top:4px;
+}
+.result-code{
+  font-family:var(--sans);
+  font-size:30px;
+  font-weight:800;
+  letter-spacing:.22em;
+  text-indent:.22em; /* 抵消末位字距，保持视觉居中 */
+  color:var(--cream);
+  background:linear-gradient(135deg,var(--ink) 0%,var(--ink-light) 100%);
+  border-radius:12px;
+  padding:7px 18px 8px;
+  box-shadow:0 5px 16px rgba(45,53,97,.28);
+}
+.result-en{
+  font-size:11px;
+  color:var(--amber);
+  letter-spacing:.24em;
+  text-indent:.24em;
+  font-weight:500;
 }
 .result-desc{
   font-size:14px;
@@ -460,51 +481,80 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   justify-content:center;
 }
 .radar-wrap svg{width:100%;max-width:320px;height:auto}
-.dim-list{
+/* 四维对立倾向占比（MBTI式双向条形图） */
+.axispct-list{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:12px;
   margin-bottom:28px;
 }
-.dim-item{
+.axispct-row{
   background:var(--cream-card);
   border:1px solid var(--line);
-  border-radius:10px;
-  padding:9px 13px;
+  border-radius:12px;
+  padding:12px 14px 13px;
 }
-.dim-item-top{
+.ap-top{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:6px;
+  margin-bottom:9px;
 }
-.dim-name{
-  font-size:12px;
-  font-weight:500;
-  color:var(--ink);
+.ap-side{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:12.5px;
+  color:var(--ink-muted);
+  white-space:nowrap;
 }
-.dim-pct{
-  font-size:12px;
-  font-weight:700;
-  color:var(--amber);
-  font-family:var(--serif);
+.ap-side b{
+  font-size:13px;
+  font-weight:600;
   font-variant-numeric:tabular-nums;
+  color:var(--ink-muted);
 }
-.dim-bar-track{
-  height:4px;
-  background:var(--line);
-  border-radius:2px;
+.ap-right{flex-direction:row}
+.ap-letter{
+  font-style:normal;
+  font-size:10px;
+  font-weight:700;
+  width:18px;height:18px;
+  border-radius:6px;
+  background:var(--cream);
+  border:1px solid var(--line);
+  color:var(--ink-muted);
+  display:inline-flex;align-items:center;justify-content:center;
+}
+/* 偏向的一侧高亮 */
+.ap-side.on{color:var(--ink);font-weight:600}
+.ap-side.on b{color:var(--ink);font-size:14px;font-weight:800}
+.ap-left.on .ap-letter{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.ap-right.on .ap-letter{background:var(--amber);color:#fff;border-color:var(--amber)}
+/* 双向条 */
+.ap-track{
+  position:relative;
+  display:flex;
+  height:12px;
+  border-radius:6px;
   overflow:hidden;
+  background:var(--line);
 }
-.dim-bar-fill{
+.ap-fill{
   height:100%;
-  border-radius:2px;
-  background:linear-gradient(90deg,var(--ink),var(--ink-light));
-  transition:width 1s cubic-bezier(.22,.61,.36,1);
   width:0%;
+  transition:width .9s cubic-bezier(.22,.61,.36,1);
 }
-.dim-item.top .dim-bar-fill{
-  background:linear-gradient(90deg,var(--amber),var(--amber-light));
+.ap-fill-left{background:#C9CDDE}
+.ap-fill-right{background:#F0D9B4}
+.ap-fill-left.on{background:linear-gradient(90deg,var(--ink),var(--ink-light))}
+.ap-fill-right.on{background:linear-gradient(90deg,var(--amber-light),var(--amber))}
+.ap-midline{
+  position:absolute;
+  left:50%;top:0;bottom:0;
+  width:1.5px;
+  background:var(--cream-card);
+  transform:translateX(-.75px);
 }
 .career-card{
   background:var(--ink);
@@ -663,14 +713,27 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 }
 .allrole-badge{
   flex-shrink:0;
-  width:34px;height:34px;
-  border-radius:10px;
+  min-width:46px;
+  height:34px;
+  padding:0 7px;
+  border-radius:9px;
   background:var(--ink);
   color:var(--cream);
-  font-family:var(--serif);
-  font-size:15px;
+  font-family:var(--sans);
+  font-size:12.5px;
   font-weight:700;
+  letter-spacing:.06em;
   display:flex;align-items:center;justify-content:center;
+}
+.allrole-group{
+  font-family:var(--serif);
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink-light);
+  letter-spacing:.03em;
+  padding:4px 2px 7px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:-2px;
 }
 .allrole-names{min-width:0}
 .allrole-name{
@@ -781,8 +844,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
           <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
         <div class="home-card-text">
-          <div class="home-card-label">8类职业画像</div>
-          <div class="home-card-desc">雷达图+维度占比+发展建议</div>
+          <div class="home-card-label">16类职业画像</div>
+          <div class="home-card-desc">4维倾向组合 · 雷达图+占比+发展建议</div>
         </div>
       </div>
     </div>
@@ -823,18 +886,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <div class="result-header">
       <div class="result-eyebrow">YOUR PROFILE</div>
       <div class="result-role" id="result-role"></div>
-      <div class="result-role-en" id="result-role-en"></div>
+      <div class="result-code-line">
+        <span class="result-code" id="result-code"></span>
+        <span class="result-en" id="result-en"></span>
+      </div>
     </div>
 
     <div class="result-desc" id="result-desc"></div>
+
+    <div class="result-section-title">四维倾向占比</div>
+    <div class="axispct-list" id="axispct-list"></div>
 
     <div class="result-section-title">八维特征雷达</div>
     <div class="radar-wrap">
       <svg id="radar-svg" viewBox="0 0 320 320"></svg>
     </div>
-
-    <div class="result-section-title">各维度占比</div>
-    <div class="dim-list" id="dim-list"></div>
 
     <div class="insight-grid">
       <div class="insight-box strength">
@@ -869,7 +935,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <div class="allroles-title">全部职业画像</div>
       <div class="allroles-top-placeholder"></div>
     </div>
-    <div class="allroles-lead">共8类职业画像，每一类对应一种突出的职业性格倾向，可对照了解自己与他人的特点。</div>
+    <div class="allroles-lead">由4组对立倾向组合出16类画像：行动风格（D实干 / E创新）、能量来源（S社交 / A独立）、认知方式（L逻辑 / C艺术）、价值导向（P统筹 / G服务）。可对照了解自己与他人的特点。</div>
     <div class="allroles-list" id="allroles-list"></div>
   </section>
 
@@ -959,93 +1025,192 @@ const DIMS = {
 };
 const DIM_ORDER = ["实干","创新","社交","逻辑","统筹","艺术","服务","独立"];
 
-/* ========== 8类角色画像（与8个维度一一对应） ========== */
+/* ========== 4个对立轴（模仿MBTI，每轴二选一，4位组合=16画像） ========== */
+/* 轴1行动风格 D实干/E创新；轴2能量来源 S社交/A独立；轴3认知方式 L逻辑/C艺术；轴4价值导向 P统筹/G服务 */
+const AXES = [
+  {left:"实干", right:"创新", lcode:"D", rcode:"E", label:"行动风格"},
+  {left:"社交", right:"独立", lcode:"S", rcode:"A", label:"能量来源"},
+  {left:"逻辑", right:"艺术", lcode:"L", rcode:"C", label:"认知方式"},
+  {left:"统筹", right:"服务", lcode:"P", rcode:"G", label:"价值导向"}
+];
+/* 16画像固定展示顺序：先D实干系后E创新系，各8个 */
+const ROLE_ORDER = ["DSLP","DSLG","DSCP","DSCG","DALP","DALG","DACP","DACG",
+                    "ESLP","ESLG","ESCP","ESCG","EALP","EALG","EACP","EACG"];
+
+/* ========== 16类角色画像（key为4位类型代码） ========== */
 const ROLES = {
-  "实干": {
-    name:"实干执行家",
-    en:"THE DOER",
-    desc:"你是脚踏实地的行动派。注重落地与结果，擅长把想法转化为现实。做事可靠、执行力强，是团队中最值得信赖的交付者。你相信'做'比'想'更有力量，在实践中不断积累经验与自信。",
-    strength:"行动力强、务实可靠、注重结果交付，能在压力下高效推进任务。",
-    watchout:"有时可能过于关注眼前执行，忽视长远规划与创新突破。建议偶尔抬头看路，给自己留出思考与探索的空间。",
-    career:"工程技术、项目管理、运营执行、生产管理、技术运维、供应链等需要强执行力的领域。",
-    tags:["工程技术","项目管理","运营执行","技术运维","供应链"]
+  "DSLP":{
+    name:"执行统筹官", en:"THE OPERATOR",
+    desc:"你是天生的执行组织者。既踏实肯干、注重结果，又善于与人协作、理性规划，能把复杂任务拆解清楚，并调动团队一步步落地。在需要牵头推进、现场调度的场景中，你格外让人安心。",
+    strength:"执行力、组织力与理性规划兼备，能牵头把复杂事项稳妥落地。",
+    watchout:"容易事必躬亲、把压力都扛在自己身上，建议学会授权放权，信任团队。",
+    career:"项目管理、运营管理、生产管理、工程主管、行政统筹、供应链管理等需要组织执行的领域。",
+    tags:["项目管理","运营管理","生产主管","行政统筹","供应链"],
+    intro:"这类人是天生的执行组织者，集踏实落地、协作沟通、理性分析与全局规划于一身，擅长把复杂任务拆解为清晰步骤，并调动团队一步步推进到位，在需要牵头调度的场景中格外可靠，是团队里让人安心的主心骨。其需要注意的是容易事必躬亲、压力自扛，学会授权放权、信任同伴会走得更轻松。典型适配方向为项目管理、运营管理、生产管理、工程主管、行政统筹、供应链管理等需要组织执行的领域。"
   },
-  "创新": {
-    name:"创新探索者",
-    en:"THE EXPLORER",
-    desc:"你是充满好奇心的开拓者。思维开放、敢于尝试，乐于突破固有框架。你对未知充满热情，不畏惧失败，总能在变化中发现新的可能性，是推动变革与创新的关键力量。",
-    strength:"思维活跃、敢于冒险、适应变化能力强，能不断产出新想法与新方案。",
-    watchout:"兴趣广泛但可能缺乏持久专注，容易三分钟热度。建议学会聚焦，将创意落地为可执行的成果。",
-    career:"产品研发、创意策划、市场新业务、用户研究、前沿技术探索、创业等需要创新精神的领域。",
-    tags:["产品研发","创意策划","市场探索","用户研究","创业"]
+  "DSLG":{
+    name:"实务协调者", en:"THE FACILITATOR",
+    desc:"你是务实又热心的问题协调者。你擅长沟通、讲道理，也愿意实实在在地帮人解决具体困难，总能在人与人、事与事之间找到可行的折中方案，把矛盾化解于无形。",
+    strength:"沟通协调与务实助人结合，能理性地帮他人把具体问题落地解决。",
+    watchout:"可能为了调和各方而委屈自己的立场，建议适时表达真实意见，不必一味迁就。",
+    career:"客户成功、行政协调、学生工作、售后支持、人力资源专员、政务服务等沟通与落地支持领域。",
+    tags:["客户成功","行政协调","学生工作","售后支持","人力专员"],
+    intro:"这类人务实而热心，兼具沟通协调、理性判断与服务意愿，擅长在人与人、事与事之间找到可行的折中方案，实实在在地帮他人解决具体困难、化解矛盾，是团队中温和而管用的润滑剂。需要留意的是，其可能为了调和各方而过度迁就、委屈自身立场，学会适时表达真实意见会更有边界。典型适配方向为客户成功、行政协调、学生工作、售后支持、人力资源专员、政务服务等需要沟通与落地支持的领域。"
   },
-  "社交": {
-    name:"社交协调者",
-    en:"THE CONNECTOR",
-    desc:"你是天生的人际桥梁。擅长沟通、善于理解他人，乐于在团队中扮演协调者角色。你能敏锐感知他人需求，调动团队氛围，让不同性格的人顺畅合作，是组织中不可或缺的润滑剂。",
-    strength:"沟通能力强、共情力好、善于协调资源与关系，团队凝聚力的核心。",
-    watchout:"可能过度在意他人评价，难以拒绝不合理请求。建议建立边界感，学会在照顾他人的同时保护自己的精力。",
-    career:"人力资源、公关传播、销售商务、行政管理、社团运营、客户成功、咨询等需要人际互动的领域。",
-    tags:["人力资源","公关传播","销售商务","行政管理","客户成功"]
+  "DSCP":{
+    name:"活动组织家", en:"THE ORGANIZER",
+    desc:"你是张罗场面的能手。既肯干务实，又有审美和感染力，擅长把活动、项目办得既有条理又有氛围，总能调动大家的参与热情，让事情热闹而不失秩序。",
+    strength:"组织力、感染力与审美兼备，能把集体活动办得有序又有温度。",
+    watchout:"容易因追求面面俱到而过度操劳，建议抓大放小，允许细节有瑕疵。",
+    career:"活动策划、会展执行、社团运营、市场推广、品牌活动、文旅运营等组织与氛围营造领域。",
+    tags:["活动策划","会展执行","社团运营","市场推广","品牌活动"],
+    intro:"这类人是张罗场面的能手，兼具务实执行、人际感染力、审美表达与统筹能力，擅长把活动和项目办得既有条理又有氛围，能调动众人的参与热情，让事情热闹而不失秩序。其需要注意的是容易追求面面俱到而过度操劳，学会抓大放小、允许细节存在瑕疵会更从容。典型适配方向为活动策划、会展执行、社团运营、市场推广、品牌活动、文旅运营等需要组织与氛围营造的领域。"
   },
-  "逻辑": {
-    name:"逻辑思辨者",
-    en:"THE ANALYST",
-    desc:"你是理性冷静的思考者。擅长拆解问题、依靠逻辑推理判断，重视事实与证据。你不被情绪左右，能在复杂局面中梳理出清晰脉络，做出客观、有依据的决策。",
-    strength:"分析能力强、客观理性、决策有依据，能在复杂信息中抓住本质。",
-    watchout:"可能过于理性而忽视情感因素，在人际互动中显得疏离。建议培养对他人情绪的感知与回应能力。",
-    career:"数据分析、算法工程、法律合规、风险控制、科研分析、战略研究、技术开发等需要逻辑推理的领域。",
-    tags:["数据分析","算法工程","法律合规","风险控制","科研分析"]
+  "DSCG":{
+    name:"暖心行动者", en:"THE SUPPORTER",
+    desc:"你是用行动传递温暖的人。你热心、敏感于他人情绪，也愿意撸起袖子帮人把事做好，常在别人需要时第一时间出现，用实实在在的付出换来身边人的信任与依赖。",
+    strength:"共情力强且乐于实干，能用具体行动给予他人及时而温暖的支持。",
+    watchout:"付出过多容易透支，建议关照自身需求，别把别人的事都揽到自己身上。",
+    career:"社会工作、教育辅导、护理康复、志愿者管理、客户关怀、社区服务等需要温度与行动的领域。",
+    tags:["社会工作","教育辅导","护理康复","志愿管理","客户关怀"],
+    intro:"这类人用行动传递温暖，共情敏锐、乐于亲近人，也愿意撸起袖子帮人把事情做好，常在他人需要时第一时间出现，以实实在在的付出赢得身边人的信任与依赖。需要警惕的是付出过多容易精力透支，学会关照自身需求、不把别人的事都揽到身上是其长期保持热情的关键。典型适配方向为社会工作、教育辅导、护理康复、志愿者管理、客户关怀、社区服务等需要温度与行动的领域。"
   },
-  "统筹": {
-    name:"规划统筹者",
-    en:"THE ARCHITECT",
-    desc:"你是胸有蓝图的规划师。擅长长远布局、目标感强，习惯计划先行、按部就班。你能梳理复杂流程、把控整体进度，让事情有条不紊地推进，是组织中可靠的掌舵人。",
-    strength:"规划能力强、目标清晰、善于统筹资源与时间，做事有条理。",
-    watchout:"可能过于依赖计划，面对突发变化时适应性不足。建议培养弹性思维，在计划与灵活之间找到平衡。",
-    career:"项目管理、战略规划、运营管理、行政统筹、产品管理、活动策划等需要全局视野的领域。",
-    tags:["项目管理","战略规划","运营管理","产品管理","活动策划"]
+  "DALP":{
+    name:"严谨技术家", en:"THE TECHNICIAN",
+    desc:"你是沉稳可靠的技术中坚。你喜欢独立钻研、讲求逻辑，也习惯按计划稳步攻坚，面对复杂技术问题能沉住气、有条理地逐个击破，用扎实的成果说话。",
+    strength:"专注、理性且有规划，能独立、系统地攻克复杂技术难题。",
+    watchout:"可能埋头做事而疏于同步与协作，建议多主动沟通进展，避免信息孤岛。",
+    career:"工程师、软件开发、硬件与集成电路、测试质控、技术运维、数据分析等专注严谨领域。",
+    tags:["工程师","软件开发","集成电路","测试质控","技术运维"],
+    intro:"这类人是沉稳可靠的技术中坚，偏好独立钻研、讲求逻辑条理，也习惯按计划稳步攻坚，面对复杂问题能沉住气、有条理地逐个击破，最终用扎实成果说话。其可提升之处在于容易埋头做事而疏于同步协作，多主动沟通进展、避免陷入信息孤岛会让专业价值被更多人看见。典型适配方向为工程师、软件开发、硬件与集成电路、测试质控、技术运维、数据分析等需要专注与严谨的领域。"
   },
-  "艺术": {
-    name:"艺术创意者",
-    en:"THE CREATOR",
-    desc:"你是感知细腻的创作者。审美敏锐、想象力丰富，擅长通过各种形式表达想法。你对美有独特的追求，能在平凡中发现灵感，用创意为世界增添色彩与意义。",
-    strength:"审美力强、想象力丰富、表达能力独特，能产出有感染力的创意作品。",
-    watchout:"可能对现实细节不够关注，在落地执行上需要他人协助。建议培养将创意转化为实际成果的执行力。",
-    career:"视觉设计、新媒体创作、文案策划、影视制作、文创产品、品牌设计、艺术教育等创意领域。",
-    tags:["视觉设计","新媒体","文案策划","影视制作","品牌设计"]
+  "DALG":{
+    name:"幕后保障者", en:"THE BACKSTAGE KEEPER",
+    desc:"你是默默托底的守护者。你不抢风头、独立踏实，习惯用理性把基础而关键的工作做扎实，在别人看不见的地方保障整个系统平稳运转，功劳虽隐却不可或缺。",
+    strength:"踏实可靠、责任心强，能独立把基础性、保障性工作做到稳固。",
+    watchout:"付出不易被看见可能产生失落，建议适度表达贡献，也主动争取成长机会。",
+    career:"技术支持、运维保障、质量管理、档案数据、后勤保障、公共部门基础岗等稳健保障领域。",
+    tags:["技术支持","运维保障","质量管理","数据档案","后勤保障"],
+    intro:"这类人是默默托底的守护者，不抢风头、独立踏实，习惯用理性把基础而关键的工作做扎实，在他人看不见的地方保障系统平稳运转，贡献虽隐蔽却不可或缺。需要留意的是，长期隐身幕后可能因付出不被看见而失落，适度表达贡献、主动争取成长机会有助于其获得应有的认可。典型适配方向为技术支持、运维保障、质量管理、档案数据、后勤保障、公共部门基础岗位等需要稳健保障的领域。"
   },
-  "服务": {
-    name:"服务奉献者",
-    en:"THE GIVER",
-    desc:"你是温暖有爱的利他者。共情力强、乐于帮助他人，看重工作的社会价值。你希望自己的努力能为他人带来积极改变，在服务与奉献中找到深层的意义感与满足。",
-    strength:"共情力强、有责任感、关注他人需求，能建立深厚的信任关系。",
-    watchout:"可能过度付出而忽视自身需求，容易产生职业倦怠。建议学会自我关怀，在帮助他人与照顾自己之间保持平衡。",
-    career:"教育教学、医疗健康、社会工作、公益组织、公共服务、心理咨询、客户服务等利他型领域。",
-    tags:["教育教学","医疗健康","社会工作","公益组织","心理咨询"]
+  "DACP":{
+    name:"匠心工艺师", en:"THE ARTISAN",
+    desc:"你是精益求精的匠人。你享受独立打磨作品，既重手感与品质，又有自己的章法和规划，对细节近乎执着，力求把每一件作品都做到经得起推敲。",
+    strength:"专注、有审美且自律，能持续打磨出高品质、有质感的成果。",
+    watchout:"可能因苛求细节拖慢进度，建议平衡完美与效率，设定交付节点。",
+    career:"工业与产品设计、工艺工程、UI视觉、精密制造、内容后期、手作品牌等品质打磨领域。",
+    tags:["产品设计","工艺工程","UI视觉","精密制造","手作品牌"],
+    intro:"这类人是精益求精的匠人，享受独立打磨作品的过程，既重视手感、品质与审美，又有自己的章法与规划，对细节近乎执着，力求每件成果都经得起推敲。其需要平衡的是，对细节的苛求可能拖慢整体进度，设定清晰的交付节点、在完美与效率间取得折中会更有产出。典型适配方向为工业与产品设计、工艺工程、UI视觉、精密制造、内容后期、手作品牌等强调品质打磨的领域。"
   },
-  "独立": {
-    name:"独立钻研者",
-    en:"THE SCHOLAR",
-    desc:"你是专注深度的研究者。享受独处思考、喜欢自主完成任务，不喜欢过多社交干扰。你能在一个领域里长期深耕，追求专业上的精进与突破，是安静而有力量的深耕者。",
-    strength:"专注力强、自主学习能力好、能在专业领域深度钻研，做事有深度。",
-    watchout:"可能过于封闭，错过协作与交流带来的新视角。建议适度打开自己，在独立思考与团队协作之间找到平衡。",
-    career:"科学研究、编程开发、学术研究、专业技术深耕、文献分析、自由创作等需要深度专注的领域。",
-    tags:["科学研究","编程开发","学术研究","专业技术","自由创作"]
+  "DACG":{
+    name:"温情手作人", en:"THE MAKER",
+    desc:"你是以作品传递心意的手作者。你安静、细腻、有温度，喜欢独立创作，也希望自己做的东西能给人带来慰藉与美好，在一笔一画里安放对他人的善意。",
+    strength:"细腻专注、富同理心，能创作有温度、能抚慰人的作品。",
+    watchout:"容易沉浸在小世界里、市场化不足，建议学习运营，让好作品被更多人看见。",
+    career:"手作设计、插画绘本、文创开发、特殊教育、艺术疗愈、公益文创等需要温度与手艺的领域。",
+    tags:["手作设计","插画绘本","文创开发","艺术疗愈","公益文创"],
+    intro:"这类人是以作品传递心意的手作者，安静细腻、富有温度，既享受独立创作的专注，也希望自己的作品能给他人带来慰藉与美好，在一笔一画、一针一线中安放对人的善意。其可提升之处在于容易沉浸于自己的小世界、市场化与推广不足，适当学习运营、让好作品被更多人看见会放大其价值。典型适配方向为手作设计、插画绘本、文创开发、特殊教育、艺术疗愈、公益文创等需要温度与手艺的领域。"
+  },
+  "ESLP":{
+    name:"战略开拓者", en:"THE STRATEGIST",
+    desc:"你是开疆拓土的领军人。你眼光前瞻、敢于求变，又善于理性布局、凝聚团队，能在不确定中看准方向，带着一群人把新想法做成新格局。",
+    strength:"前瞻创新、理性战略与团队领导力兼备，能带队开拓新局面。",
+    watchout:"步子迈得快可能忽视落地细节与风险，建议搭配稳健的执行伙伴。",
+    career:"战略与商业分析、新业务拓展、创业、产品负责人、管理咨询、投资等开拓与全局领导领域。",
+    tags:["战略分析","新业务拓展","创业","产品负责人","管理咨询"],
+    intro:"这类人是开疆拓土的领军人，眼光前瞻、敢于求变，同时具备理性布局与凝聚团队的能力，能在不确定中看准方向，带领一群人把新想法做成新格局。需要注意的是，其步伐较快、可能忽视落地细节与风险，搭配稳健细致的执行伙伴、给创新加上风控闭环会更可持续。典型适配方向为战略与商业分析、新业务拓展、创业、产品负责人、管理咨询、投资等需要开拓与全局领导的领域。"
+  },
+  "ESLG":{
+    name:"资源连接者", en:"THE BROKER",
+    desc:"你是善于牵线搭桥的赋能者。你思路活络、人缘好，又能理性判断需求，擅长把合适的人、资源和机会连接起来，在帮助他人成长成事的过程中实现价值。",
+    strength:"善于链接资源、洞察需求，能用创新方式为他人赋能、促成合作。",
+    watchout:"忙于对接可能分散精力，建议聚焦核心价值，避免成为单纯的中转站。",
+    career:"商务拓展、生态合作、孵化器与创投服务、咨询顾问、社群运营、猎头资源等链接赋能领域。",
+    tags:["商务拓展","生态合作","创投服务","咨询顾问","社群运营"],
+    intro:"这类人是善于牵线搭桥的赋能者，思路活络、人缘好，又能理性判断需求，擅长把合适的人、资源与机会连接起来，在帮助他人成长成事的过程中实现自身价值。其需要留意的是，频繁对接容易分散精力，聚焦核心价值、避免只做信息中转站，才能形成不可替代的竞争力。典型适配方向为商务拓展、生态合作、孵化器与创投服务、咨询顾问、社群运营、猎头资源等需要链接与赋能的领域。"
+  },
+  "ESCP":{
+    name:"创意策划家", en:"THE IDEATOR",
+    desc:"你是点子不断的创意主导。你想象力丰富、表达有感染力，又能张罗团队、把控项目，擅长把天马行空的灵感变成可执行、能打动人的创意方案。",
+    strength:"创意、表达与项目组织兼备，能主导从灵感到落地的完整创意项目。",
+    watchout:"灵感多但易跳跃，建议建立流程与复盘，让创意稳定产出而非靠状态。",
+    career:"创意策划、广告营销、内容总监、新媒体运营、品牌策划、编导等创意组织领域。",
+    tags:["创意策划","广告营销","内容总监","新媒体运营","品牌策划"],
+    intro:"这类人是点子不断的创意主导，想象力丰富、表达富有感染力，同时具备张罗团队、把控项目的统筹力，擅长把天马行空的灵感转化为可执行、能打动人的方案。需要注意的是，其思维跳跃、产出易受状态影响，建立稳定的创作流程与复盘机制，能让创意持续而非偶发。典型适配方向为创意策划、广告营销、内容总监、新媒体运营、品牌策划、编导等需要创意与组织的领域。"
+  },
+  "ESCG":{
+    name:"价值传播者", en:"THE MESSENGER",
+    desc:"你是用创意传递理念的人。你敏感、有表现力，乐于与人共鸣，也怀着一份利他之心，擅长用新颖动人的内容去影响人、感召人，为相信的价值发声。",
+    strength:"富感染力与使命感，能用创新表达打动人心、传播正向价值。",
+    watchout:"容易理想化或情绪投入过深，建议兼顾传播规律与自我节奏，避免内耗。",
+    career:"公益传播、知识教育、博主创作、公关与品牌叙事、科普创作、社会创新等表达感召领域。",
+    tags:["公益传播","知识博主","公关叙事","科普创作","社会创新"],
+    intro:"这类人用创意传递理念，感受敏锐、表现欲与共情感强，又怀有利他之心，擅长以新颖动人的内容影响人、感召人，为自己相信的价值发声。需要留意的是，其容易理想化或情绪投入过深而产生内耗，尊重传播规律、把握自我节奏，才能让影响力细水长流。典型适配方向为公益传播、知识教育、博主创作、公关与品牌叙事、科普创作、社会创新等需要表达与感召的领域。"
+  },
+  "EALP":{
+    name:"前沿探索家", en:"THE RESEARCHER",
+    desc:"你是志在前沿的探索者。你享受独立钻研，思维理性、敢闯无人区，也能为长期目标系统布局，在陌生而艰深的领域里一步步建立自己的知识版图。",
+    strength:"探索欲、理性深度与长期规划兼备，能独立攻坚前沿问题。",
+    watchout:"课题可能过于超前而曲高和寡，建议适时与同行交流、验证方向。",
+    career:"科学研究、算法与人工智能、前沿技术研发、博士深造、量化研究、政策研究等深度探索领域。",
+    tags:["科学研究","算法AI","前沿研发","深造读博","量化研究"],
+    intro:"这类人是志在前沿的探索者，享受独立钻研，思维理性、敢于闯入无人区，也能围绕长期目标系统布局，在陌生而艰深的领域中逐步建立自己的知识版图。其可提升之处在于，研究过于超前可能曲高和寡或偏离实际，适时与同行交流、持续验证方向，能让探索少走弯路。典型适配方向为科学研究、算法与人工智能、前沿技术研发、博士深造、量化研究、政策研究等需要深度探索的领域。"
+  },
+  "EALG":{
+    name:"创新发明者", en:"THE INVENTOR",
+    desc:"你是埋头创造的发明家。你喜欢独立琢磨、用逻辑解决真问题，也希望自己的发明能切实帮到人，常常沉浸在'让世界变好一点点'的创造中，乐此不疲。",
+    strength:"创新攻坚与利他动机结合，能钻研出真正解决问题的成果。",
+    watchout:"容易重技术轻需求，建议多接触真实用户，避免做出自嗨式发明。",
+    career:"硬件与医疗器械研发、创客、无障碍技术、应用研发、农业与环保技术、专利转化等发明领域。",
+    tags:["器械研发","创客发明","无障碍技术","应用研发","专利转化"],
+    intro:"这类人是埋头创造的发明家，喜欢独立琢磨、用逻辑解决真实问题，也希望自己的成果能切实帮到人，常沉浸在让世界变好一点点的创造中乐此不疲。需要注意的是，其容易重技术而轻需求，多接触真实用户、从痛点反推研发，才能避免做出自嗨式发明。典型适配方向为硬件与医疗器械研发、创客、无障碍技术、应用研发、农业与环保技术、专利转化等需要发明与济世情怀的领域。"
+  },
+  "EACP":{
+    name:"独立创作者", en:"THE INDEPENDENT CREATOR",
+    desc:"你是自成一派的自由创作者。你想象天马行空、享受独处创作，又有经营个人作品体系的规划力，能持续构建风格鲜明、属于自己的创作宇宙。",
+    strength:"想象力与自律兼备，能独立、持续地产出风格化的个人作品。",
+    watchout:"独立创作易与市场脱节，建议保持对外连接，兼顾表达与反馈。",
+    career:"独立插画与漫画、作家编剧、独立游戏开发、个人IP、设计工作室主理等个人风格领域。",
+    tags:["独立插画","作家编剧","独立游戏","个人IP","工作室主理"],
+    intro:"这类人是自成一派的自由创作者，想象天马行空、享受独处创作，又具备经营个人作品体系的规划力，能持续构建风格鲜明、属于自己的创作宇宙。其需要平衡的是，独立创作容易与市场和受众脱节，保持对外连接、在自我表达与外界反馈间找到接口，作品才会走得更远。典型适配方向为独立插画与漫画、作家编剧、独立游戏开发、个人IP、设计工作室主理等强调个人风格的领域。"
+  },
+  "EACG":{
+    name:"理想艺术家", en:"THE VISIONARY ARTIST",
+    desc:"你是为信念而创作的理想主义者。你内心丰富、感受力强，在独处中孕育灵感，也总希望作品能触动人心、带来一点善意与改变，创作于你既是表达也是使命。",
+    strength:"感受深邃、动机纯粹，能创作出触动心灵、承载意义的作品。",
+    watchout:"容易因理想与现实的落差而受挫，建议建立现实支撑，保护创作热情。",
+    career:"纯艺术与当代艺术、写作诗歌、纪录片与独立影像、艺术公益、疗愈创作等意义表达领域。",
+    tags:["纯艺术","写作诗歌","纪录影像","艺术公益","疗愈创作"],
+    intro:"这类人是为信念而创作的理想主义者，内心丰富、感受力强，在独处中孕育灵感，也总希望作品能触动人心、带来善意与改变，创作对其而言既是表达更是使命。需要留意的是，其容易因理想与现实的落差而受挫，主动建立稳定的现实支撑与收入结构，才能长久保护这份创作热情。典型适配方向为纯艺术与当代艺术、写作诗歌、纪录片与独立影像、艺术公益、疗愈创作等承载意义表达的领域。"
   }
 };
 
-/* 全部画像页使用的第三人称客观介绍（用于向他人说明画像特点） */
-const ROLE_INTRO = {
-  "实干":"这类人脚踏实地、注重落地与结果，擅长把想法转化为现实，做事可靠、执行力强，能在压力下高效推进任务，是团队中最值得信赖的交付者。其潜在短板是容易埋头执行而忽视长远规划与创新，若能偶尔抬头看路、留出思考空间会发展得更全面。典型适配方向为工程技术、项目管理、运营执行、生产管理、技术运维、供应链等强调强执行力的领域。",
-  "创新":"这类人充满好奇心、思维开放、敢于尝试，乐于突破固有框架，对未知热情高、不畏惧失败，善于在变化中发现新可能，是推动变革的关键力量。需要留意兴趣过广可能导致专注不足，学会聚焦、把创意落地为成果是其成长关键。典型适配方向为产品研发、创意策划、市场新业务、用户研究、前沿技术探索、创业等需要创新精神的领域。",
-  "社交":"这类人是天生的人际桥梁，擅长沟通、善于理解他人，能敏锐感知他人需求、调动团队氛围，让不同性格的人顺畅合作，是组织中的润滑剂与凝聚力核心。需要注意的是容易过度在意他人评价、不擅拒绝，建立清晰边界感有助于其保护精力、长期稳定输出。典型适配方向为人力资源、公关传播、销售商务、行政管理、社团运营、客户成功、咨询等高频人际互动领域。",
-  "逻辑":"这类人理性冷静，擅长拆解问题、依靠逻辑推理判断，重视事实与证据，不易被情绪左右，能在复杂局面中梳理出清晰脉络、做出有依据的决策。其可提升之处在于，过于理性可能在人际互动中显得疏离，增强对他人情绪的感知与回应会更具领导力。典型适配方向为数据分析、算法工程、法律合规、风险控制、科研分析、战略研究、技术开发等需要逻辑推理的领域。",
-  "统筹":"这类人胸有蓝图、擅长长远布局，目标感强，习惯计划先行、按部就班，能梳理复杂流程、把控整体进度，让事情有条不紊地推进。需要避免过度依赖计划，面对突发变化时增强弹性思维、在计划与灵活之间取得平衡是其成长方向。典型适配方向为项目管理、战略规划、运营管理、行政统筹、产品管理、活动策划等需要全局视野的领域。",
-  "艺术":"这类人感知细腻、审美敏锐、想象力丰富，擅长通过文字、画面、构思等多种形式表达想法，善于在平凡中发现灵感，用创意为事物赋予意义。相对薄弱的是对现实细节的关注与落地执行，若能补足把创意转化为实际成果的能力会更完整。典型适配方向为视觉设计、新媒体创作、文案策划、影视制作、文创产品、品牌设计、艺术教育等创意领域。",
-  "服务":"这类人温暖有爱、共情力强、乐于帮助他人，看重工作的社会价值，倾向于通过自身努力为他人带来积极改变，并从中获得深层意义感，也容易建立深厚的信任关系。需要警惕过度付出而忽视自身需求，学会自我关怀、避免职业倦怠是其长期发展的关键。典型适配方向为教育教学、医疗健康、社会工作、公益组织、公共服务、心理咨询、客户服务等利他型领域。",
-  "独立":"这类人专注而有深度，享受独处思考、偏好自主完成任务，不喜欢过多社交干扰，能在一个领域长期深耕、追求专业精进与突破，安静而有力量。其可提升之处在于避免过于封闭，适度参与协作能带来新视角，在独立与协作间取得平衡会更有成效。典型适配方向为科学研究、编程开发、学术研究、专业技术深耕、文献分析、自由创作等需要深度专注的领域。"
-};
+/* 各维度题数（用于归一化，消除各维度题量不同的偏差） */
+const DIM_COUNT = {};
+DIM_ORDER.forEach(d=>{ DIM_COUNT[d] = QUESTIONS.filter(q=>q.dim===d).length; });
+/* 原始分 → 归一化到 [-1,1] 的倾向强度 */
+function normScores(scores){
+  const n={};
+  DIM_ORDER.forEach(d=>{ n[d] = scores[d]/(DIM_COUNT[d]*3); });
+  return n;
+}
+/* 一对对立极的相对占比（合计100%，返回左右两极百分比） */
+function axisPercent(norm, axis){
+  const a=(norm[axis.left]+1)/2;   // 左极拥有程度 0~1
+  const b=(norm[axis.right]+1)/2;  // 右极拥有程度 0~1
+  if(a+b===0) return {left:50,right:50};
+  const left=a/(a+b)*100;
+  return {left:left, right:100-left};
+}
+/* 根据8维度得分，按4对立轴逐轴比较归一化强度，得出4位类型代码（平局取左极） */
+function getRoleCode(scores){
+  const n = normScores(scores);
+  let code='';
+  AXES.forEach(a=>{
+    code += (n[a.right] > n[a.left]) ? a.rcode : a.lcode;
+  });
+  return code;
+}
 
 /* ========== 状态 ========== */
 const TOTAL = QUESTIONS.length;
@@ -1222,24 +1387,23 @@ function calcScores(){
 function showResult(){
   document.getElementById('progress-fill').style.width='100%';
   const scores = calcScores();
+  const norm = normScores(scores);   // 归一化到[-1,1]，消除题量差异
 
-  // 取得分最高的维度，对应8类画像
+  // 雷达高亮：归一化强度最高的维度
   let topDim = DIM_ORDER[0];
-  let maxScore = -Infinity;
+  let maxN = -Infinity;
   DIM_ORDER.forEach(d=>{
-    if(scores[d]>maxScore){maxScore=scores[d];topDim=d;}
+    if(norm[d]>maxN){maxN=norm[d];topDim=d;}
   });
-  const role = ROLES[topDim];
-
-  const totalAbs = DIM_ORDER.reduce((s,d)=>s+Math.abs(scores[d]),0);
-  const percents = {};
-  DIM_ORDER.forEach(d=>{
-    percents[d] = totalAbs===0 ? 12.5 : Math.abs(scores[d])/totalAbs*100;
-  });
+  // 主画像：4对立轴逐轴比较，组合出4位代码 → 16画像之一
+  const roleCode = getRoleCode(scores);
+  const role = ROLES[roleCode];
 
   document.getElementById('result-role').textContent = role.name;
-  document.getElementById('result-role-en').textContent = role.en;
+  document.getElementById('result-code').textContent = roleCode;
+  document.getElementById('result-en').textContent = role.en;
   document.getElementById('result-desc').textContent = role.desc;
+  renderAxisPct(norm, roleCode);
   document.getElementById('insight-strength').textContent = role.strength;
   document.getElementById('insight-watchout').textContent = role.watchout;
   document.getElementById('career-text').textContent = role.career;
@@ -1253,36 +1417,44 @@ function showResult(){
     tagsWrap.appendChild(span);
   });
 
-  renderRadar(scores, topDim);
-
-  const dimList = document.getElementById('dim-list');
-  dimList.innerHTML='';
-  const sorted = [...DIM_ORDER].sort((a,b)=>percents[b]-percents[a]);
-  sorted.forEach((d)=>{
-    const item = document.createElement('div');
-    item.className = 'dim-item' + (d===topDim?' top':'');
-    item.innerHTML = `
-      <div class="dim-item-top">
-        <span class="dim-name">${DIMS[d].name}</span>
-        <span class="dim-pct">${percents[d].toFixed(2)}%</span>
-      </div>
-      <div class="dim-bar-track">
-        <div class="dim-bar-fill" data-width="${percents[d].toFixed(2)}%"></div>
-      </div>
-    `;
-    dimList.appendChild(item);
-  });
+  renderRadar(norm, topDim);
 
   showView('view-result');
 
+  // 双向占比条生长动画
   setTimeout(()=>{
-    document.querySelectorAll('.dim-bar-fill').forEach(el=>{
+    document.querySelectorAll('.ap-fill').forEach(el=>{
       el.style.width = el.dataset.width;
     });
-  },100);
+  },120);
 }
 
-/* ========== 雷达图渲染 ========== */
+/* ========== 四维对立倾向占比（MBTI式双向条形图） ========== */
+function renderAxisPct(norm, roleCode){
+  const wrap = document.getElementById('axispct-list');
+  wrap.innerHTML='';
+  AXES.forEach((a,i)=>{
+    const p = axisPercent(norm, a);
+    const winCode = roleCode[i];
+    const leftOn = winCode===a.lcode;
+    const row = document.createElement('div');
+    row.className='axispct-row';
+    row.innerHTML = `
+      <div class="ap-top">
+        <span class="ap-side ap-left ${leftOn?'on':''}"><i class="ap-letter">${a.lcode}</i>${a.left}<b>${p.left.toFixed(2)}%</b></span>
+        <span class="ap-side ap-right ${!leftOn?'on':''}"><b>${p.right.toFixed(2)}%</b>${a.right}<i class="ap-letter">${a.rcode}</i></span>
+      </div>
+      <div class="ap-track">
+        <div class="ap-fill ap-fill-left ${leftOn?'on':''}" data-width="${p.left.toFixed(2)}%"></div>
+        <div class="ap-fill ap-fill-right ${!leftOn?'on':''}" data-width="${p.right.toFixed(2)}%"></div>
+        <span class="ap-midline"></span>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+/* ========== 雷达图渲染（入参为归一化强度 norm） ========== */
 function renderRadar(scores, topDim){
   const svg = document.getElementById('radar-svg');
   const cx=160, cy=160, maxR=92;
@@ -1343,23 +1515,33 @@ function renderRadar(scores, topDim){
 
 /* ========== 全部画像页 ========== */
 let rolesReturnTo = 'view-home';
-function renderAllRoles(highlightDim){
+function renderAllRoles(highlightCode){
   const wrap = document.getElementById('allroles-list');
   wrap.innerHTML='';
-  DIM_ORDER.forEach((d,i)=>{
-    const r = ROLES[d];
+  let lastGroup='';
+  ROLE_ORDER.forEach((code,i)=>{
+    const r = ROLES[code];
+    // 按首位字母分两大系，插入分组标题
+    const group = code[0]==='D' ? '实干落地系 · 行动风格偏务实执行' : '创新开拓系 · 行动风格偏求新探索';
+    if(group!==lastGroup){
+      lastGroup=group;
+      const gh=document.createElement('div');
+      gh.className='allrole-group';
+      gh.textContent=group;
+      wrap.appendChild(gh);
+    }
     const card = document.createElement('div');
-    card.className = 'allrole-card' + (d===highlightDim?' is-current':'');
+    card.className = 'allrole-card' + (code===highlightCode?' is-current':'');
     const tags = r.tags.map(t=>`<span class="allrole-tag">${t}</span>`).join('');
     card.innerHTML = `
       <div class="allrole-head">
-        <div class="allrole-badge">${String(i+1).padStart(2,'0')}</div>
+        <div class="allrole-badge">${code}</div>
         <div class="allrole-names">
-          <div class="allrole-name">${r.name}${d===highlightDim?'<span class="allrole-current-flag"> · 你的画像</span>':''}</div>
+          <div class="allrole-name">${r.name}${code===highlightCode?'<span class="allrole-current-flag"> · 你的画像</span>':''}</div>
           <div class="allrole-en">${r.en}</div>
         </div>
       </div>
-      <div class="allrole-intro">${ROLE_INTRO[d]}</div>
+      <div class="allrole-intro">${r.intro}</div>
       <div class="allrole-tags">${tags}</div>
     `;
     wrap.appendChild(card);
@@ -1370,8 +1552,7 @@ function openAllRoles(fromView){
   // 从结果页进入时，高亮本人画像
   let hl = null;
   if(fromView==='view-result'){
-    const scores = calcScores();
-    hl = DIM_ORDER.slice().sort((a,b)=>scores[b]-scores[a])[0];
+    hl = getRoleCode(calcScores());
   }
   renderAllRoles(hl);
   showView('view-all-roles');
