@@ -582,6 +582,131 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   color:var(--cream);
 }
 
+/* ========== 「查看全部画像」幽灵入口 ========== */
+.ghost-link{
+  width:100%;
+  margin-top:14px;
+  padding:11px;
+  text-align:center;
+  font-size:13px;
+  letter-spacing:.04em;
+  color:var(--ink-light);
+  background:transparent;
+  border:1.5px dashed var(--line);
+  border-radius:12px;
+  transition:all .15s;
+}
+.ghost-link:active{transform:scale(.98)}
+.ghost-link:hover{color:var(--ink);border-color:var(--amber)}
+.ghost-link .arrow{display:inline-block;transition:transform .2s}
+.ghost-link:hover .arrow{transform:translateX(4px)}
+.ghost-link-result{margin-top:16px}
+
+/* ========== 全部画像页 ========== */
+#view-all-roles{
+  min-height:100vh;
+  padding:18px 22px 40px;
+}
+.allroles-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.allroles-top .quiz-back{position:static}
+.allroles-title{
+  font-family:var(--serif);
+  font-size:18px;
+  font-weight:700;
+  color:var(--ink);
+  letter-spacing:.04em;
+}
+.allroles-top-placeholder{width:36px}
+.allroles-lead{
+  font-size:12px;
+  line-height:1.7;
+  color:var(--ink-muted);
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-left:3px solid var(--amber);
+  border-radius:10px;
+  padding:11px 14px;
+  margin-bottom:18px;
+}
+.allroles-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.allrole-card{
+  background:var(--cream-card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px 16px 14px;
+}
+.allrole-card.is-current{
+  border:1.5px solid var(--amber);
+  box-shadow:0 4px 16px rgba(232,163,61,.16);
+}
+.allrole-current-flag{
+  font-family:var(--sans);
+  font-size:11px;
+  font-weight:500;
+  color:var(--amber);
+  letter-spacing:.02em;
+}
+.allrole-head{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  margin-bottom:9px;
+}
+.allrole-badge{
+  flex-shrink:0;
+  width:34px;height:34px;
+  border-radius:10px;
+  background:var(--ink);
+  color:var(--cream);
+  font-family:var(--serif);
+  font-size:15px;
+  font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.allrole-names{min-width:0}
+.allrole-name{
+  font-family:var(--serif);
+  font-size:16px;
+  font-weight:700;
+  color:var(--ink);
+  line-height:1.25;
+}
+.allrole-en{
+  font-size:10px;
+  letter-spacing:.12em;
+  color:var(--amber);
+  margin-top:2px;
+}
+.allrole-intro{
+  font-size:12.5px;
+  line-height:1.75;
+  color:#454c6b;
+  text-align:justify;
+}
+.allrole-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:11px;
+}
+.allrole-tag{
+  font-size:11px;
+  color:var(--ink-light);
+  background:var(--cream);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:3px 10px;
+}
+
 /* ========== Toast ========== */
 .toast{
   position:fixed;
@@ -665,6 +790,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <button class="home-start-btn" onclick="startQuiz()">
       开始探索<span class="arrow">→</span>
     </button>
+    <button class="ghost-link" onclick="openAllRoles('view-home')">查看全部画像 <span class="arrow">→</span></button>
     <div class="home-footer">凭第一直觉作答 · 约需5-6分钟 · 结果仅供参考</div>
   </section>
 
@@ -731,6 +857,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <button class="result-btn result-btn-restart" onclick="restart()">重新测评</button>
       <button class="result-btn result-btn-share" onclick="shareResult()">保存结果</button>
     </div>
+    <button class="ghost-link ghost-link-result" onclick="openAllRoles('view-result')">查看全部画像 <span class="arrow">→</span></button>
+  </section>
+
+  <!-- ========== 全部画像页 ========== -->
+  <section id="view-all-roles" class="view hidden">
+    <div class="allroles-top">
+      <button class="quiz-back" onclick="closeAllRoles()" aria-label="返回">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="allroles-title">全部职业画像</div>
+      <div class="allroles-top-placeholder"></div>
+    </div>
+    <div class="allroles-lead">共8类职业画像，每一类对应一种突出的职业性格倾向，可对照了解自己与他人的特点。</div>
+    <div class="allroles-list" id="allroles-list"></div>
   </section>
 
   <!-- 低调署名 -->
@@ -893,6 +1033,18 @@ const ROLES = {
     career:"科学研究、编程开发、学术研究、专业技术深耕、文献分析、自由创作等需要深度专注的领域。",
     tags:["科学研究","编程开发","学术研究","专业技术","自由创作"]
   }
+};
+
+/* 全部画像页使用的第三人称客观介绍（用于向他人说明画像特点） */
+const ROLE_INTRO = {
+  "实干":"这类人脚踏实地、注重落地与结果，擅长把想法转化为现实，做事可靠、执行力强，能在压力下高效推进任务，是团队中最值得信赖的交付者。其潜在短板是容易埋头执行而忽视长远规划与创新，若能偶尔抬头看路、留出思考空间会发展得更全面。典型适配方向为工程技术、项目管理、运营执行、生产管理、技术运维、供应链等强调强执行力的领域。",
+  "创新":"这类人充满好奇心、思维开放、敢于尝试，乐于突破固有框架，对未知热情高、不畏惧失败，善于在变化中发现新可能，是推动变革的关键力量。需要留意兴趣过广可能导致专注不足，学会聚焦、把创意落地为成果是其成长关键。典型适配方向为产品研发、创意策划、市场新业务、用户研究、前沿技术探索、创业等需要创新精神的领域。",
+  "社交":"这类人是天生的人际桥梁，擅长沟通、善于理解他人，能敏锐感知他人需求、调动团队氛围，让不同性格的人顺畅合作，是组织中的润滑剂与凝聚力核心。需要注意的是容易过度在意他人评价、不擅拒绝，建立清晰边界感有助于其保护精力、长期稳定输出。典型适配方向为人力资源、公关传播、销售商务、行政管理、社团运营、客户成功、咨询等高频人际互动领域。",
+  "逻辑":"这类人理性冷静，擅长拆解问题、依靠逻辑推理判断，重视事实与证据，不易被情绪左右，能在复杂局面中梳理出清晰脉络、做出有依据的决策。其可提升之处在于，过于理性可能在人际互动中显得疏离，增强对他人情绪的感知与回应会更具领导力。典型适配方向为数据分析、算法工程、法律合规、风险控制、科研分析、战略研究、技术开发等需要逻辑推理的领域。",
+  "统筹":"这类人胸有蓝图、擅长长远布局，目标感强，习惯计划先行、按部就班，能梳理复杂流程、把控整体进度，让事情有条不紊地推进。需要避免过度依赖计划，面对突发变化时增强弹性思维、在计划与灵活之间取得平衡是其成长方向。典型适配方向为项目管理、战略规划、运营管理、行政统筹、产品管理、活动策划等需要全局视野的领域。",
+  "艺术":"这类人感知细腻、审美敏锐、想象力丰富，擅长通过文字、画面、构思等多种形式表达想法，善于在平凡中发现灵感，用创意为事物赋予意义。相对薄弱的是对现实细节的关注与落地执行，若能补足把创意转化为实际成果的能力会更完整。典型适配方向为视觉设计、新媒体创作、文案策划、影视制作、文创产品、品牌设计、艺术教育等创意领域。",
+  "服务":"这类人温暖有爱、共情力强、乐于帮助他人，看重工作的社会价值，倾向于通过自身努力为他人带来积极改变，并从中获得深层意义感，也容易建立深厚的信任关系。需要警惕过度付出而忽视自身需求，学会自我关怀、避免职业倦怠是其长期发展的关键。典型适配方向为教育教学、医疗健康、社会工作、公益组织、公共服务、心理咨询、客户服务等利他型领域。",
+  "独立":"这类人专注而有深度，享受独处思考、偏好自主完成任务，不喜欢过多社交干扰，能在一个领域长期深耕、追求专业精进与突破，安静而有力量。其可提升之处在于避免过于封闭，适度参与协作能带来新视角，在独立与协作间取得平衡会更有成效。典型适配方向为科学研究、编程开发、学术研究、专业技术深耕、文献分析、自由创作等需要深度专注的领域。"
 };
 
 /* ========== 状态 ========== */
@@ -1187,6 +1339,45 @@ function renderRadar(scores, topDim){
       fill="${isTop?'#E8A33D':'#4A5490'}" font-weight="${isTop?'700':'400'}">${DIMS[d].name}</text>`;
   }
   svg.innerHTML = html;
+}
+
+/* ========== 全部画像页 ========== */
+let rolesReturnTo = 'view-home';
+function renderAllRoles(highlightDim){
+  const wrap = document.getElementById('allroles-list');
+  wrap.innerHTML='';
+  DIM_ORDER.forEach((d,i)=>{
+    const r = ROLES[d];
+    const card = document.createElement('div');
+    card.className = 'allrole-card' + (d===highlightDim?' is-current':'');
+    const tags = r.tags.map(t=>`<span class="allrole-tag">${t}</span>`).join('');
+    card.innerHTML = `
+      <div class="allrole-head">
+        <div class="allrole-badge">${String(i+1).padStart(2,'0')}</div>
+        <div class="allrole-names">
+          <div class="allrole-name">${r.name}${d===highlightDim?'<span class="allrole-current-flag"> · 你的画像</span>':''}</div>
+          <div class="allrole-en">${r.en}</div>
+        </div>
+      </div>
+      <div class="allrole-intro">${ROLE_INTRO[d]}</div>
+      <div class="allrole-tags">${tags}</div>
+    `;
+    wrap.appendChild(card);
+  });
+}
+function openAllRoles(fromView){
+  rolesReturnTo = fromView || 'view-home';
+  // 从结果页进入时，高亮本人画像
+  let hl = null;
+  if(fromView==='view-result'){
+    const scores = calcScores();
+    hl = DIM_ORDER.slice().sort((a,b)=>scores[b]-scores[a])[0];
+  }
+  renderAllRoles(hl);
+  showView('view-all-roles');
+}
+function closeAllRoles(){
+  showView(rolesReturnTo);
 }
 
 /* ========== 重新测评 ========== */
