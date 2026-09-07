@@ -630,7 +630,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     </div>
     <div class="home-eyebrow">CAREER COMPASS</div>
     <h1 class="home-title">职业罗盘<br>自我认知测评</h1>
-    <p class="home-subtitle">60道题，探索你的职业性格底色<br>找到属于你的成长方向</p>
+    <p class="home-subtitle">45道题，探索你的职业性格底色<br>找到属于你的成长方向</p>
 
     <div class="home-card">
       <div class="home-card-row">
@@ -638,7 +638,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
           <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
         </div>
         <div class="home-card-text">
-          <div class="home-card-label">60道精选题目</div>
+          <div class="home-card-label">45道精选题目</div>
           <div class="home-card-desc">覆盖8大职业性格维度，含反向校验题</div>
         </div>
       </div>
@@ -665,7 +665,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <button class="home-start-btn" onclick="startQuiz()">
       开始探索<span class="arrow">→</span>
     </button>
-    <div class="home-footer">凭第一直觉作答 · 约需6-8分钟 · 结果仅供参考</div>
+    <div class="home-footer">凭第一直觉作答 · 约需5-6分钟 · 结果仅供参考</div>
   </section>
 
   <!-- ========== 答题页 ========== -->
@@ -674,7 +674,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
       <button class="quiz-back" onclick="goHome()" aria-label="返回">
         <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       </button>
-      <div class="quiz-progress-text"><b id="q-current">1</b> / 60</div>
+      <div class="quiz-progress-text"><b id="q-current">1</b> / 45</div>
     </div>
     <div class="quiz-progress-track">
       <div class="quiz-progress-fill" id="progress-fill"></div>
@@ -739,9 +739,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 </div>
 
 <script>
-/* ========== 数据：60道题（含反向校验题 rev:true） ========== */
+/* ========== 数据：45道精选题目（8维度均衡，含反向校验题 rev:true） ========== */
 const QUESTIONS = [
-  /* —— 实干执行 8题 —— */
+  /* —— 第一轮：8维度各1题，正向铺陈 —— */
   {dim:"实干", text:"我更喜欢动手落地完成事情，而不是停留在空想方案"},
   {dim:"创新", text:"我乐于接受全新想法，愿意尝试未知的事物"},
   {dim:"社交", text:"我享受与人沟通协作，喜欢组织集体活动"},
@@ -750,59 +750,48 @@ const QUESTIONS = [
   {dim:"艺术", text:"我对审美、创意表达类事情抱有浓厚兴趣"},
   {dim:"服务", text:"我希望工作可以帮助他人，为别人提供价值"},
   {dim:"独立", text:"我更喜欢独立思考完成任务，减少外界干扰"},
+  /* —— 第二轮：8维度行为倾向题 —— */
   {dim:"实干", text:"面对任务，我优先关注实际可执行的步骤"},
   {dim:"创新", text:"我经常冒出新奇点子，喜欢突破固有模式"},
   {dim:"社交", text:"在团队中我愿意主动协调不同人的想法"},
   {dim:"逻辑", text:"遇到问题我会客观拆解，不被情绪左右判断"},
-  {dim:"统筹", text:"我擅长梳理长远目标，规划学习与职业路径"},
+  {dim:"统筹", text:"多任务并行时，我能合理安排优先级"},
   {dim:"艺术", text:"我喜欢用文字、画面、构思去表达自我想法"},
+  {dim:"服务", text:"帮助别人解决问题会让我获得很大的满足感"},
+  {dim:"独立", text:"遇到难题时，我第一反应是自己查资料而不是问人"},
+  /* —— 第三轮：深化题，正反交错 —— */
+  {dim:"实干", text:"与其反复讨论方案，我更愿意先做出一个雏形看看"},
+  {dim:"创新", text:"我更倾向于遵循成熟的方法，而不是自己另辟蹊径", rev:true},
+  {dim:"社交", text:"我能很快和陌生人找到共同话题"},
+  {dim:"逻辑", text:"讨论问题时，我能敏锐发现其中的逻辑漏洞"},
+  {dim:"统筹", text:"我会思考未来职业路径，提前储备相关能力"},
+  {dim:"艺术", text:"我经常在脑海中构建各种画面和故事"},
+  {dim:"服务", text:"我能敏锐察觉到他人的情绪变化和需求"},
+  {dim:"独立", text:"我更喜欢在讨论中碰撞想法，而不是独自琢磨", rev:true},
+  /* —— 第四轮：反向校验为主，检验作答一致性 —— */
+  {dim:"实干", text:"我有时会因为过度思考而迟迟无法开始行动", rev:true},
+  {dim:"创新", text:"面对陌生领域，我会感到兴奋而不是焦虑"},
+  {dim:"社交", text:"长时间的社交活动会让我感到疲惫，需要独处恢复", rev:true},
+  {dim:"逻辑", text:"我做决定时更容易被情感和直觉驱动", rev:true},
+  {dim:"统筹", text:"我更喜欢随机应变，而不是提前做详细计划", rev:true},
+  {dim:"艺术", text:"我更关注事物的功能实用性，而非形式美感", rev:true},
   {dim:"服务", text:"看到他人困难，我愿意主动伸出援手"},
   {dim:"独立", text:"复杂问题我倾向独自钻研，不依赖他人意见"},
+  /* —— 第五轮：补充正向题 —— */
   {dim:"实干", text:"相比于理论研究，我更看重实践产出的结果"},
   {dim:"创新", text:"我不害怕失败，愿意为新的尝试承担风险"},
-  {dim:"社交", text:"参加聚会集体场合，我会主动融入交流"},
+  {dim:"社交", text:"处理矛盾分歧，我愿意充当调解沟通角色"},
   {dim:"逻辑", text:"评判一件事对错，我看重证据与客观事实"},
   {dim:"统筹", text:"生活学习中我习惯制作清单，把控时间进度"},
   {dim:"艺术", text:"我容易感知环境氛围，对美感细节比较敏感"},
   {dim:"服务", text:"我希望未来工作能够带来社会层面的价值"},
-  {dim:"独立", text:"多人讨论时，我更多时候选择旁观思考"},
+  {dim:"独立", text:"我享受一个人安静地深入研究某个问题的过程"},
+  /* —— 第六轮：补齐前5个维度 —— */
   {dim:"实干", text:"接到任务，我习惯尽快动手开始做"},
   {dim:"创新", text:"我讨厌一成不变，期待工作有变化和新鲜感"},
-  {dim:"社交", text:"处理矛盾分歧，我愿意充当调解沟通角色"},
-  {dim:"逻辑", text:"制定规划时，我会权衡多种方案的优劣得失"},
-  {dim:"统筹", text:"我会思考未来职业路径，提前储备相关能力"},
-  {dim:"艺术", text:"我更愿意从事可以发挥想象力的工作内容"},
-  /* —— 第二轮：深化题与反向校验题交错排列 —— */
-  {dim:"实干", text:"我擅长把复杂的想法拆解成可操作的小步骤"},
-  {dim:"创新", text:"我更倾向于遵循成熟的方法，而不是自己另辟蹊径", rev:true},
-  {dim:"社交", text:"我能很快和陌生人找到共同话题"},
-  {dim:"逻辑", text:"我做决定时更容易被情感和直觉驱动", rev:true},
-  {dim:"统筹", text:"多任务并行时，我能合理安排优先级"},
-  {dim:"艺术", text:"我更关注事物的功能实用性，而非形式美感", rev:true},
-  {dim:"服务", text:"帮助别人解决问题会让我获得很大的满足感"},
-  {dim:"独立", text:"我更喜欢在讨论中碰撞想法，而不是独自琢磨", rev:true},
-  {dim:"实干", text:"我有时会因为过度思考而迟迟无法开始行动", rev:true},
-  {dim:"创新", text:"我喜欢用不同寻常的方式解决问题"},
-  {dim:"社交", text:"长时间的社交活动会让我感到疲惫，需要独处恢复", rev:true},
-  {dim:"逻辑", text:"我喜欢找出事物背后的因果关系和规律"},
-  {dim:"统筹", text:"我更喜欢随机应变，而不是提前做详细计划", rev:true},
-  {dim:"艺术", text:"看到好的设计或作品，我会忍不住分析它的构成"},
-  {dim:"服务", text:"我认为工作首先是实现个人价值，其次才是帮助他人", rev:true},
-  {dim:"独立", text:"我享受一个人安静地深入研究某个问题的过程"},
-  {dim:"实干", text:"与其反复讨论方案，我更愿意先做出一个雏形看看"},
-  {dim:"创新", text:"不确定性会让我感到不安，我更喜欢可预测的环境", rev:true},
   {dim:"社交", text:"我擅长观察团队氛围并适时调节"},
-  {dim:"逻辑", text:"面对复杂数据和推理，我容易感到烦躁", rev:true},
-  {dim:"统筹", text:"我习惯为可能的风险提前准备预案"},
-  {dim:"艺术", text:"我经常在脑海中构建各种画面和故事"},
-  {dim:"服务", text:"我能敏锐察觉到他人的情绪变化和需求"},
-  {dim:"独立", text:"相比团队合作，我更习惯独自完成学习任务"},
-  {dim:"实干", text:"我更享受构思方案的过程，而不是执行落地的过程", rev:true},
-  {dim:"创新", text:"面对陌生领域，我会感到兴奋而不是焦虑"},
-  {dim:"社交", text:"在群体中我更倾向于倾听，而不是主导讨论", rev:true},
-  {dim:"逻辑", text:"讨论问题时，我能敏锐发现其中的逻辑漏洞"},
-  {dim:"服务", text:"我愿意花时间参与志愿服务或公益活动"},
-  {dim:"独立", text:"遇到难题时，我第一反应是自己查资料而不是问人"}
+  {dim:"逻辑", text:"我喜欢找出事物背后的因果关系和规律"},
+  {dim:"统筹", text:"我习惯为可能的风险提前准备预案"}
 ];
 
 /* ========== 7级选项（生动文案 + 程度渐变色） ========== */
@@ -830,7 +819,7 @@ const DIMS = {
 };
 const DIM_ORDER = ["实干","创新","社交","逻辑","统筹","艺术","服务","独立"];
 
-/* ========== 8类角色画像 ========== */
+/* ========== 8类角色画像（与8个维度一一对应） ========== */
 const ROLES = {
   "实干": {
     name:"实干执行家",
@@ -940,11 +929,11 @@ function startQuiz(){
   showView('view-quiz');
 }
 
-/* ========== 渲染节点进度（12段，每段5题） ========== */
+/* ========== 渲染节点进度（9段，每段5题） ========== */
 function renderNodes(){
   const row = document.getElementById('node-row');
   row.innerHTML='';
-  const segCount = 12;
+  const segCount = 9;
   for(let i=0;i<segCount;i++){
     const node = document.createElement('div');
     node.className='quiz-node';
@@ -954,7 +943,7 @@ function renderNodes(){
 }
 
 function updateNodes(){
-  const segCount = 12;
+  const segCount = 9;
   const segment = Math.floor(currentIdx / (TOTAL/segCount));
   for(let i=0;i<segCount;i++){
     const node = document.getElementById('node-'+i);
@@ -1082,6 +1071,7 @@ function showResult(){
   document.getElementById('progress-fill').style.width='100%';
   const scores = calcScores();
 
+  // 取得分最高的维度，对应8类画像
   let topDim = DIM_ORDER[0];
   let maxScore = -Infinity;
   DIM_ORDER.forEach(d=>{
@@ -1143,7 +1133,7 @@ function showResult(){
 /* ========== 雷达图渲染 ========== */
 function renderRadar(scores, topDim){
   const svg = document.getElementById('radar-svg');
-  const cx=160, cy=160, maxR=110;
+  const cx=160, cy=160, maxR=92;
   const n = 8;
   const angleStep = (Math.PI*2)/n;
   const startAngle = -Math.PI/2;
@@ -1187,7 +1177,7 @@ function renderRadar(scores, topDim){
   for(let i=0;i<n;i++){
     const d = DIM_ORDER[i];
     const angle = startAngle + i*angleStep;
-    const labelR = maxR + 22;
+    const labelR = maxR + 20;
     const lx = cx+labelR*Math.cos(angle);
     const ly = cy+labelR*Math.sin(angle);
     const isTop = d===topDim;
